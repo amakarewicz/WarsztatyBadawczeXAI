@@ -1,0 +1,66 @@
+---
+title: "EDA"
+author: "Agata Kaczmarek & Agata Makarewicz & Jacek Wiśniewski"
+date: "27 03 2021"
+output: 
+  html_document:
+  theme: united
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(knitr)
+library(splitstackshape)
+library(data.table)
+library(ggplot2)
+library(dplyr)
+```
+
+### Dataset
+
+```{r data}
+data <- read.csv('phones.csv')
+knitr::kable(head(data), caption = "Tab.1. Head of dataset")
+```
+
+```{r str}
+# structure
+str(data)
+```
+
+```{r summary}
+knitr::kable(summary(data[,-c(1,2)]), caption = "Tab.2. Basic statistics of numeric variables")
+```
+
+```{r test}
+# summaryDF <- function(indf) {
+#   require(splitstackshape)
+#   temp <- data.table(summary(indf))[, c("V2", "N"), with = FALSE]
+#   dcast.data.table(cSplit(temp, "N", ":")[!is.na(N_1)],
+#                    N_1 ~ V2, value.var = "N_2")
+# }
+# 
+# 
+# kable(summaryDF(data))
+```
+
+### Discrete variables 
+
+```{r brand}
+ggplot(data, aes(x=forcats::fct_infreq(brand))) +
+  geom_bar(stat="count", width=0.5) +
+  coord_flip() # jak posortowac w druga strone? wybrac jakies top 10 bo dużo 
+```
+
+### Numerical variables
+
+```{r hist}
+# back mpix
+n_bin <- floor(sqrt(dim(data)[1]))
+bin_width <- floor((max(data$back_camera_mpix, na.rm=TRUE)-min(data$back_camera_mpix, na.rm=TRUE))/n_bin)
+plot1 <- ggplot(data, aes(x=back_camera_mpix)) +   
+   geom_histogram(aes(y=..density..),colour="darkblue",fill="lightblue", binwidth = bin_width, boundary = 0) + 
+   geom_density(aes(y=..density..), colour = "steelblue2", size=1.5)+
+   labs(x = "Back Camera Megapixels", y = "Density")
+plot1
+```
