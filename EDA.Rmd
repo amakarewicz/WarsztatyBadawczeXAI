@@ -5,6 +5,7 @@ date: "27 03 2021"
 output: 
   html_document:
   theme: united
+
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +14,9 @@ library(knitr)
 library(splitstackshape)
 library(data.table)
 library(ggplot2)
+library(tidyverse)
 library(dplyr)
+library(GGally)
 ```
 
 ### Dataset
@@ -63,4 +66,30 @@ plot1 <- ggplot(data, aes(x=back_camera_mpix)) +
    geom_density(aes(y=..density..), colour = "steelblue2", size=1.5)+
    labs(x = "Back Camera Megapixels", y = "Density")
 plot1
+```
+
+### Correlations
+
+```{r}
+data[is.na(data)]<-0
+ggplot(data)+
+  geom_count(mapping = aes(x=width_px, y=height_px))+
+  labs(x= "Width in px", y="Height in px")
+
+```
+
+```{r}
+data[is.na(data)]<-0
+ggcorr(data, method = c("everything", "pearson"))
+```
+
+```{r, fig.height=11, fig.width=15}
+data2<-data
+data(data2, package = "reshape")
+ggpairs(
+  data2[, c(3, 4,5,8, 9, 10)],
+  upper = list(continuous = "density", combo = "box_no_facet"),
+  lower = list(continuous = "points", combo = "dot_no_facet")
+)
+
 ```
