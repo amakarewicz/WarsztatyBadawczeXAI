@@ -14,9 +14,11 @@ library(knitr)
 library(splitstackshape)
 library(data.table)
 library(ggplot2)
-library(tidyverse)
 library(dplyr)
+library(tidyverse)
 library(GGally)
+library(DataExplorer)
+library(gridExtra)
 ```
 
 ### Dataset
@@ -26,49 +28,136 @@ data <- read.csv('phones.csv')
 knitr::kable(head(data), caption = "Tab.1. Head of dataset")
 ```
 
+#### Structure 
+
 ```{r str}
 # structure
 str(data)
 ```
 
-```{r summary}
-knitr::kable(summary(data[,-c(1,2)]), caption = "Tab.2. Basic statistics of numeric variables")
-```
+#### Summary
 
-```{r test}
-# summaryDF <- function(indf) {
-#   require(splitstackshape)
-#   temp <- data.table(summary(indf))[, c("V2", "N"), with = FALSE]
-#   dcast.data.table(cSplit(temp, "N", ":")[!is.na(N_1)],
-#                    N_1 ~ V2, value.var = "N_2")
-# }
-# 
-# 
-# kable(summaryDF(data))
+```{r summary}
+summaryDF <- function(indf) {
+  require(splitstackshape)
+  temp <- data.table(summary(indf))[, c("V2", "N"), with = FALSE]
+  dcast.data.table(cSplit(temp, "N", ":")[!is.na(N_1)],
+                   N_1 ~ V2, value.var = "N_2")
+}
+
+
+kable(summaryDF(data[,-c(1,2)])  %>% 
+        arrange(front_camera_mpix) %>%
+        rename(stats = N_1), caption = "Tab.2. Basic statistics of numeric variables")
 ```
 
 ### Discrete variables 
 
 ```{r brand}
-ggplot(data, aes(x=forcats::fct_infreq(brand))) +
-  geom_bar(stat="count", width=0.5) +
-  coord_flip() # jak posortowac w druga strone? wybrac jakies top 10 bo dużo 
+data %>% 
+	group_by(brand) %>% 
+	summarise(count = n()) %>%
+	ggplot(aes(x = reorder(brand,(count)), y = count)) + 
+		geom_bar(stat = 'identity') +
+    coord_flip()  
 ```
 
 ### Numerical variables
 
-```{r hist}
-# back mpix
+```{r hist, fig.width=15}
+
 n_bin <- floor(sqrt(dim(data)[1]))
 bin_width <- floor((max(data$back_camera_mpix, na.rm=TRUE)-min(data$back_camera_mpix, na.rm=TRUE))/n_bin)
 plot1 <- ggplot(data, aes(x=back_camera_mpix)) +   
    geom_histogram(aes(y=..density..),colour="darkblue",fill="lightblue", binwidth = bin_width, boundary = 0) + 
    geom_density(aes(y=..density..), colour = "steelblue2", size=1.5)+
    labs(x = "Back Camera Megapixels", y = "Density")
-plot1
+
+bin_width <- floor((max(data$front_camera_mpix, na.rm=TRUE)-min(data$front_camera_mpix, na.rm=TRUE))/n_bin)
+plot2 <- ggplot(data, aes(x=front_camera_mpix)) +   
+   geom_histogram(aes(y=..density..),colour="darkblue",fill="lightblue", binwidth = bin_width, boundary = 0) + 
+   geom_density(aes(y=..density..), colour = "steelblue2", size=1.5)+
+   labs(x = "Front Camera Megapixels", y = "Density")
+
+bin_width <- floor((max(data$battery_mAh, na.rm=TRUE)-min(data$battery_mAh, na.rm=TRUE))/n_bin)
+plot3 <- ggplot(data, aes(x=battery_mAh)) +   
+   geom_histogram(aes(y=..density..),colour="darkblue",fill="lightblue", binwidth = bin_width, boundary = 0) + 
+   geom_density(aes(y=..density..), colour = "steelblue2", size=1.5)+
+   labs(x = "Battery capacity in mAh", y = "Density")
+
+bin_width <- round((max(data$ram_gb, na.rm=TRUE)-min(data$ram_gb, na.rm=TRUE))/n_bin, 1)
+plot4 <- ggplot(data, aes(x=ram_gb)) +   
+   geom_histogram(aes(y=..density..),colour="darkblue",fill="lightblue", binwidth = bin_width, boundary = 0) + 
+   geom_density(aes(y=..density..), colour = "steelblue2", size=1.5)+
+   labs(x = "RAM memory in GB", y = "Density")
+
+bin_width <- floor((max(data$flash_gb, na.rm=TRUE)-min(data$flash_gb, na.rm=TRUE))/n_bin)
+plot5 <- ggplot(data, aes(x=flash_gb)) +   
+   geom_histogram(aes(y=..density..),colour="darkblue",fill="lightblue", binwidth = bin_width, boundary = 0) + 
+   geom_density(aes(y=..density..), colour = "steelblue2", size=1.5)+
+   labs(x = "Flash memory storage in GB", y = "Density")
+
+bin_width <- round((max(data$diag, na.rm=TRUE)-min(data$diag, na.rm=TRUE))/n_bin, 1)
+plot6 <- ggplot(data, aes(x=diag)) +   
+   geom_histogram(aes(y=..density..),colour="darkblue",fill="lightblue", binwidth = bin_width, boundary = 0) + 
+   geom_density(aes(y=..density..), colour = "steelblue2", size=1.5)+
+   labs(x = "Screen diagonal", y = "Density")
+
+bin_width <- floor((max(data$height_px, na.rm=TRUE)-min(data$height_px, na.rm=TRUE))/n_bin)
+plot7 <- ggplot(data, aes(x=height_px)) +   
+   geom_histogram(aes(y=..density..),colour="darkblue",fill="lightblue", binwidth = bin_width, boundary = 0) + 
+   geom_density(aes(y=..density..), colour = "steelblue2", size=1.5)+
+   labs(x = "Screen height in Megapixels", y = "Density")
+
+bin_width <- floor((max(data$width_px, na.rm=TRUE)-min(data$width_px, na.rm=TRUE))/n_bin)
+plot8 <- ggplot(data, aes(x=width_px)) +   
+   geom_histogram(aes(y=..density..),colour="darkblue",fill="lightblue", binwidth = bin_width, boundary = 0) + 
+   geom_density(aes(y=..density..), colour = "steelblue2", size=1.5)+
+   labs(x = "Screen width in Megapixels", y = "Density")
+
+grid.arrange(plot1, plot2, ncol=2)
+grid.arrange(plot3, plot4, ncol=2)
+grid.arrange(plot5, plot6, ncol=2)
+grid.arrange(plot7, plot8, ncol=2)
+```
+
+### Target analysis
+
+```{r target, fig.width=15}
+bin_width <- floor((max(data$price, na.rm=TRUE)-min(data$price, na.rm=TRUE))/n_bin)
+plot1 <- ggplot(data, aes(x=price)) +   
+   geom_histogram(aes(y=..density..),colour="darkorchid",fill="thistle2", binwidth = bin_width, boundary = 0) + 
+   geom_density(aes(y=..density..), colour = "plum4", size=1.5)+
+   labs(x = "Price in PLN", y = "Density")
+
+plot2 <- ggplot(data, aes(x="price", y=price)) +
+  geom_boxplot(color="orange", fill="khaki1",lwd=1) + coord_flip()
+
+grid.arrange(plot1, plot2, ncol=2)
+```
+
+#### Most popular brands vs target 
+
+```{r violin}
+top_brands <- data %>% 
+  group_by(brand) %>% 
+	summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  select(brand) %>%
+  head(4)
+
+data %>% 
+  filter(brand %in% top_brands$brand) %>%
+  ggplot(aes(x=brand, y=price)) + 
+  geom_violin(aes(fill=brand)) +
+  geom_boxplot(width = 0.08) +
+  scale_fill_brewer(palette="Accent") + theme_classic()+
+  theme(legend.position = "none")
 ```
 
 ### Correlations
+
+#### Height & width
 
 ```{r}
 data[is.na(data)]<-0
@@ -78,10 +167,14 @@ ggplot(data)+
 
 ```
 
-```{r}
+#### All numerical variables
+
+```{r corr, fig.width=12}
 data[is.na(data)]<-0
-ggcorr(data, method = c("everything", "pearson"))
+ggcorr(data, method = c("everything", "pearson"), limits = c(0,1), label = TRUE, layout.exp = 2, hjust = 0.75)
 ```
+
+#### Relationships between variables
 
 ```{r, fig.height=11, fig.width=15}
 data2<-data
