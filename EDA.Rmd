@@ -23,19 +23,34 @@ library(gridExtra)
 
 ### Dataset
 
+At the beginning, we would like to see how our data looks like eg. what are column names, values and the structure of whole data set. 
+
 ```{r data}
 data <- read.csv('phones.csv')
-knitr::kable(head(data), caption = "Tab.1. Head of dataset")
+knitr::kable(head(data))
 ```
 
-#### Structure 
+Unique values:
+
+```{r}
+a <- c("Unique","Total","Percent")
+b <- c(length(unique(data$name)),dim(data)[1], length(unique(data$name))/dim(data)[1])
+t <- data.frame(t(b), row.names = NULL)
+colnames(t) <- a
+t
+```
+
+
+##### Structure 
 
 ```{r str}
 # structure
 str(data)
 ```
 
-#### Summary
+##### Summary
+
+Here there are are a basic statistics of numeric values, eg we can see that the biggest difference in values between min and max is for *battery_mAh*. Mean for *back_camera_mpix* is two times bogger than for *front_camera_mpix*.
 
 ```{r summary}
 summaryDF <- function(indf) {
@@ -48,10 +63,12 @@ summaryDF <- function(indf) {
 
 kable(summaryDF(data[,-c(1,2)])  %>% 
         arrange(front_camera_mpix) %>%
-        rename(stats = N_1), caption = "Tab.2. Basic statistics of numeric variables")
+        rename(stats = N_1))
 ```
 
 ### Discrete variables 
+
+Below we can see how many times each brand occurs in our set. Xiaomi and Apple are the most popular and there are a few which rarely occurs.
 
 ```{r brand}
 data %>% 
@@ -64,6 +81,8 @@ data %>%
 ```
 
 ### Numerical variables
+
+For various variables shown below, there are a lot of different values for each, there are no clearly visible dominant values. On chart about screen diagonal, we can see pick moved to the right, the majority of ohones does have diaonal greater than 4.
 
 ```{r hist, fig.width=15}
 
@@ -124,6 +143,8 @@ grid.arrange(plot7, plot8, ncol=2)
 
 ### Target analysis
 
+As we see below, our target seems as if it is from normal distribution, except the fact that it is shifted to the left, the majority of phones cost less than 2500 zł.
+
 ```{r target, fig.width=15}
 bin_width <- floor((max(data$price, na.rm=TRUE)-min(data$price, na.rm=TRUE))/n_bin)
 plot1 <- ggplot(data, aes(x=price)) +   
@@ -138,6 +159,8 @@ grid.arrange(plot1, plot2, ncol=2)
 ```
 
 #### Most popular brands vs target 
+
+Below we see differences in prices of phons from four main brands - Apple, Huawei, Samsung and Xiaomi. Clearly visible is that Xiaomi are generally less expensive than the other brands.
 
 ```{r violin}
 top_brands <- data %>% 
@@ -168,12 +191,16 @@ ggplot(data)+
 
 ```
 
+Above we see that there is nearly linear dependence between *height_px* and *width_px*.
+
 #### All numerical variables
 
 ```{r corr, fig.width=12}
 data[is.na(data)]<-0
 ggcorr(data, method = c("everything", "pearson"), limits = c(0,1), label = TRUE, layout.exp = 2, hjust = 0.75)
 ```
+
+Correlation between *flash_gb* and *price* seems to be highest, and between *ram_gb*, *width_px*, *height_px* and target seems also to be high.
 
 #### Relationships between variables
 
