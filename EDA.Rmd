@@ -187,3 +187,10 @@ ggpairs(
 )
 
 ```
+
+### Summary
+Dataset phones has few missing values, which will make modelling easier. Before creating first models, there are some issues to consider.
+
+* Variables describing phone's size are strongly correlated. Maybe we should resign from two of them.
+
+* There are some brands that are represented by few phones. Maybe we should merge them with label 'other'.
