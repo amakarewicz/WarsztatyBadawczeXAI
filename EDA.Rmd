@@ -59,7 +59,8 @@ data %>%
 	summarise(count = n()) %>%
 	ggplot(aes(x = reorder(brand,(count)), y = count)) + 
 		geom_bar(stat = 'identity') +
-    coord_flip()  
+    labs(x = 'brand') +
+    coord_flip()
 ```
 
 ### Numerical variables
@@ -163,7 +164,7 @@ data %>%
 data[is.na(data)]<-0
 ggplot(data)+
   geom_count(mapping = aes(x=width_px, y=height_px))+
-  labs(x= "Width in px", y="Height in px")
+  labs(x= "Width in px", y="Height in px", size = 'number of phones')
 
 ```
 
