@@ -30,17 +30,6 @@ data <- read.csv('phones.csv')
 knitr::kable(head(data))
 ```
 
-Unique values:
-
-```{r}
-a <- c("Unique","Total","Percent")
-b <- c(length(unique(data$name)),dim(data)[1], length(unique(data$name))/dim(data)[1])
-t <- data.frame(t(b), row.names = NULL)
-colnames(t) <- a
-t
-```
-
-
 ##### Structure 
 
 ```{r str}
@@ -80,6 +69,15 @@ data %>%
     coord_flip()
 ```
 
+`name` variable:
+
+```{r}
+a <- c("Unique","Total","Percent")
+b <- c(length(unique(data$name)),dim(data)[1], length(unique(data$name))/dim(data)[1])
+t <- data.frame(t(b), row.names = NULL)
+colnames(t) <- a
+kable(t)
+```
 ### Numerical variables
 
 For various variables shown below, there are a lot of different values for each, there are no clearly visible dominant values. On chart about screen diagonal, we can see pick moved to the right, the majority of ohones does have diaonal greater than 4.
