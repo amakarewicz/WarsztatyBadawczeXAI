@@ -1,0 +1,7 @@
+Introduction:
+
+Mobile phones are very popular nowadays, last year there were over 1.38 billion smartphones sold worldwide. Many wonder what factors affect their prices. Some guess that the technical factor affect them the most, but others think it is the brand that changes the price the most. In our work we would like to discover whether any of these sides is absolutely right, or the truth lies in the middle. During our research we will use eXplainable AI (XAI) methods.
+
+
+
+//czy tu jakoś więcej konkretów/ mniej/ dłuższe to etc?
