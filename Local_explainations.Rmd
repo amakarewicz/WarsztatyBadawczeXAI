@@ -1,0 +1,90 @@
+---
+title: "Local explainations"
+author: "Agata Makarewicz"
+date: "18 04 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(DALEX)
+library(DALEXtra)
+library(ranger)
+library(knitr)
+library(lime)
+library(gridExtra)
+library(dplyr)
+set.seed(1)
+
+model_type.dalex_explainer <- DALEXtra::model_type.dalex_explainer
+predict_model.dalex_explainer <- DALEXtra::predict_model.dalex_explainer
+```
+
+```{r data}
+phones <- read.csv('./phones.csv')
+phones[is.na(phones)] <- 0 # NA means phone does not have camera
+phones <- phones[phones$back_camera_mpix < 90 &
+                   phones$battery_mAh < 7000 &
+                   phones$flash_gb < 400 &
+                   phones$front_camera_mpix < 40, ]
+phones <- phones[, -c(1, 9, 10)] # removing name, height, width beacause they are useless
+# phones <- phones %>% group_by(brand) %>% mutate(brand = mean(price)) # target encoding
+```
+
+```{r model}
+model <- ranger(price~., data = phones, num.trees = 50)
+```
+
+```{r explainer,results=FALSE}
+explainer <- DALEX::explain(model = model, data = phones[,-8], y = phones$price) 
+```
+
+```{r breakdown, fig.width=15, fig.height=8}
+bd_1 <- predict_parts(explainer, new_observation = phones[20,], type = "break_down")
+
+bd_2 <- predict_parts(explainer, new_observation = phones[246,], type = "break_down")
+
+plot1 <- plot(bd_1)
+plot2 <- plot(bd_2)
+grid.arrange(plot1, plot2, ncol=2)
+```
+
+```{r shap}
+shap_1 <- predict_parts(explainer, new_observation = phones[74,], type = "shap", B = 10)
+
+shap_2 <- predict_parts(explainer, new_observation = phones[131,], type = "shap", B = 10)
+
+plot1 <- plot(shap_1)
+plot2 <- plot(shap_2)
+grid.arrange(plot1, plot2, ncol=2)
+```
+
+```{r lime}
+lime_1 <- predict_surrogate(explainer = explainer, new_observation = phones[39,-8], n_features = 5, 
+                              n_permutations = 1000, type = "lime")
+lime_2 <- predict_surrogate(explainer = explainer, new_observation = phones[48,-8], n_features = 5, 
+                              n_permutations = 1000, type = "lime")
+lime_3 <- predict_surrogate(explainer = explainer, new_observation = phones[300,-8], n_features = 5, 
+                              n_permutations = 1000, type = "lime")
+lime_4 <- predict_surrogate(explainer = explainer, new_observation = phones[354,-8], n_features = 5, 
+                              n_permutations = 1000, type = "lime")
+
+plot1 <- plot(lime_1)
+plot2 <- plot(lime_2)
+plot3 <- plot(lime_3)
+plot4 <- plot(lime_4)
+
+grid.arrange(plot1, plot2, ncol=2)
+grid.arrange(plot3, plot4, ncol=2)
+```
+
+```{r cp}
+cp_1 <- predict_profile(explainer,phones[1,-8])
+plot(cp_1)
+```
+
+```{r ciekawe_obserwacje}
+# 246 & 20 - praktycznie te same parametry, różne marki, cena różna o 700
+# 74 & 131 - Apple, słabe parametry a cena wysoka
+# 39 48 300 354 - Apple vs Motorola - praktycznie te same parametry, diametralna róznica ceny 
+```

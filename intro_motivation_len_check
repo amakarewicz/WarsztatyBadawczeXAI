@@ -1,0 +1,25 @@
+## How imputation techniques interact with machine learning algorithms
+
+*Authors: Martyna Majchrzak, Agata Makarewicz, Jacek Wiśniewski (Warsaw University of Technology)*
+
+### Abstract
+
+Imputation of missing values is a common step in the machine learning process. Many real-life datasets contain incomplete observations and dealing with them is a key part of modelling as most of the algorithms provided by R packages require complete data.
+This report aims to measure the influence of five different imputation methods on the performance of selected classification models. Simple methods such as mean, median, and mode are compared with advanced imputation techniques from specialized R packages - mice, VIM, and softImpute.
+As tested algorithms, Recursive Partitioning And Regression Trees, Naive Bayes, Ranger (Random forest),  Linear Discriminant Analysis, and k-Nearest Neighbours were chosen.
+Their prediction effectiveness is assessed by F1 score to provide a proper measure for both balanced and imbalanced data.\
+
+### Introduction and Motivation
+
+Missing data occurring in datasets is a common and sometimes difficult problem. Many real-world datasets, such as, for instance, medical records, are often incomplete. Unfortunately, in the field of machine learning, this is an issue which must be handled because many algorithms cannot work with missing values. Therefore, dealing with them is an important part of reprocessing data in the machine learning process.
+\
+
+The first important step is to identify the missing data pattern (or mechanism). We commonly distinguish 3, according to @Rubin : Missing Completely at Random (MCAR), Missing at Random (MAR) and Missing Not at Random (MNAR), however, we will not focus on them in this study.
+\
+
+One way of getting rid of missing data is "omission" - removing observations or variables with at least one missing value. However, this strategy is frequently inappropriate because we can lose some important data or significantly reduce it if the percentage of missing values is high.
+Fortunately, imputation serves the need better. By definition, imputation is a process of replacing missing data with substituted values. We can distinguish 2 types of imputation. First one is single imputation - we the information from only one variable to impute missing values. 
+It includes the basic methods such as imputing with mean or mode, which are fast and easy to implement, however they do not guarantee a very good performance. The second one is multiple imputations, in which we impute many values (perform imputation many times), leading to creating many complete datasets. This type includes more sophisticated strategies for instance the ones using tree-based models, which usually result in better models, but enhance the algorithm's complexity and computational time.
+\
+
+For the R language, there are implemented multiple imputations techniques in many different packages. It is often hard to choose the best approach. Our goal is to examine how these methods perform on different datasets and how they interact with different classification algorithms. In order to do that, we impute each dataset with five chosen imputations and then on each one we execute modelling with selected algorithms. We base our conclusions about imputations influence on the values of F1 measure and our own ranking.\
