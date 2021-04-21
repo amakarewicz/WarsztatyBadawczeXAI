@@ -1,7 +1,7 @@
 ---
 title: "Local explainations"
-author: "Agata Makarewicz"
-date: "18 04 2021"
+author: "Agata Kaczmarek, Agata Makarewicz, Jacek Wiśniewski"
+date: "22 04 2021"
 output: html_document
 ---
 
@@ -39,6 +39,10 @@ model <- ranger(price~., data = phones, num.trees = 50)
 explainer <- DALEX::explain(model = model, data = phones[,-8], y = phones$price) 
 ```
 
+In our data set there were some observations, which had similar feature but different prices. We wanted to check how it will look in our model predictions. 
+
+### Example 1
+
 ```{r breakdown, fig.width=15, fig.height=8}
 bd_1 <- predict_parts(explainer, new_observation = phones[20,], type = "break_down")
 
@@ -48,6 +52,53 @@ plot1 <- plot(bd_1)
 plot2 <- plot(bd_2)
 grid.arrange(plot1, plot2, ncol=2)
 ```
+
+Above we can see two observations which vary three features - *ram_gb*, *brand* and *diag*. Samsung has bigger diagonal, but less RAM GB and is more expensive by 200, whereas this difference in reality is higher, Samsung is more expensive by 700. There are also differences in impact of features - in first *batter)mAh* has positive impact and in second negative. In the first case for our model the most important were *ram_gb*, *diag* and *brand* (in this order), in second *ram_gb*, *brand* and *front_camera_px*. The question is, whether in reality *brand* does not have bigger impact on price than showed here? 
+
+### Example 2
+
+Below we can see two phones, which have similar values in many features, in two (*battery_mAh* and *diag*) second phone has better values than first one. Even though price of first phone is three times higher according to our model. The only difference not mentioned above between them is brand - first one is iPhone. That seems to be conclusion consistent with the reality.
+
+```{r lime}
+lime_1 <- predict_surrogate(explainer = explainer, new_observation = phones[39,-8], n_features = 7, 
+                              n_permutations = 1000, type = "lime")
+#lime_2 <- predict_surrogate(explainer = explainer, new_observation = phones[48,-8], n_features = 5, 
+#                              n_permutations = 1000, type = "lime")
+lime_3 <- predict_surrogate(explainer = explainer, new_observation = phones[300,-8], n_features = 7, 
+                              n_permutations = 1000, type = "lime")
+#lime_4 <- predict_surrogate(explainer = explainer, new_observation = phones[354,-8], n_features = 5, 
+#                              n_permutations = 1000, type = "lime")
+
+
+plot1 <- plot(lime_1)
+#plot2 <- plot(lime_2)
+plot3 <- plot(lime_3)
+#plot4 <- plot(lime_4)
+
+
+grid.arrange(plot1, plot3, ncol=2)
+#grid.arrange(plot39, plot300, ncol=2)
+
+kable(phones[c(39,300),-8])
+
+```
+
+### Example 3
+
+```{r cp}
+cp_1 <- predict_profile(explainer,phones[1,-8])
+plot(cp_1)
+```
+
+```{r ciekawe_obserwacje}
+# 246 & 20 - praktycznie te same parametry, różne marki, cena różna o 700
+# 74 & 131 - Apple, słabe parametry a cena wysoka
+# 39 48 300 354 - Apple vs Motorola - praktycznie te same parametry, diametralna róznica ceny 
+```
+
+### Yyyy?
+
+Cieeeeeekaaaawostka, ktoś coś?
 
 ```{r shap}
 shap_1 <- predict_parts(explainer, new_observation = phones[74,], type = "shap", B = 10)
@@ -59,32 +110,12 @@ plot2 <- plot(shap_2)
 grid.arrange(plot1, plot2, ncol=2)
 ```
 
-```{r lime}
-lime_1 <- predict_surrogate(explainer = explainer, new_observation = phones[39,-8], n_features = 5, 
-                              n_permutations = 1000, type = "lime")
-lime_2 <- predict_surrogate(explainer = explainer, new_observation = phones[48,-8], n_features = 5, 
-                              n_permutations = 1000, type = "lime")
-lime_3 <- predict_surrogate(explainer = explainer, new_observation = phones[300,-8], n_features = 5, 
-                              n_permutations = 1000, type = "lime")
-lime_4 <- predict_surrogate(explainer = explainer, new_observation = phones[354,-8], n_features = 5, 
-                              n_permutations = 1000, type = "lime")
+```{r bd}
+break_1 <- predict_parts(explainer, new_observation = phones[74,], type = "break_down")
 
-plot1 <- plot(lime_1)
-plot2 <- plot(lime_2)
-plot3 <- plot(lime_3)
-plot4 <- plot(lime_4)
+break_2 <- predict_parts(explainer, new_observation = phones[131,], type = "break_down")
 
-grid.arrange(plot1, plot2, ncol=2)
-grid.arrange(plot3, plot4, ncol=2)
-```
-
-```{r cp}
-cp_1 <- predict_profile(explainer,phones[1,-8])
-plot(cp_1)
-```
-
-```{r ciekawe_obserwacje}
-# 246 & 20 - praktycznie te same parametry, różne marki, cena różna o 700
-# 74 & 131 - Apple, słabe parametry a cena wysoka
-# 39 48 300 354 - Apple vs Motorola - praktycznie te same parametry, diametralna róznica ceny 
+plot11 <- plot(break_1)
+plot12 <- plot(break_2)
+grid.arrange(plot11, plot12, ncol=2)
 ```
