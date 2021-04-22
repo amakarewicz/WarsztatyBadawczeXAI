@@ -20,6 +20,14 @@ model_type.dalex_explainer <- DALEXtra::model_type.dalex_explainer
 predict_model.dalex_explainer <- DALEXtra::predict_model.dalex_explainer
 ```
 
+### Data preprocessing
+
+Before performing any explainations of our model's predictions, we needed to conduct simple data preprocessing. Based on EDA, following steps were executed:
+
+* ***handling missing values:*** We identified two features containing missing values, both related to camera parameters (`back_camera_mpix`, `front_camera_mpix`). Those values turned out to be meaningful, as they simply means that given mobile phone has no camera (back or front). Given that information, NA's were imputed with constant value - 0.
+* ***removing outliers:*** Based on features distribution, we identified some extreme values in some of them (`back_camera_mpix`, `front_camera_mpix`, `battery_mAh`, `flash_gb`), which would weaken our model's performance.
+* ***dealing with unimportant and correlated features:*** We decided to omit `name` variable, because it was practically unique in our dataset and naturally connected to `brand` feature. Moreover, `height_px` and `width_px` were deleted due to their strong correlation with `diag` feature (and with each other); this feature was considered as sufficient determinant of phone's dimensions.
+
 ```{r data}
 phones <- read.csv('./phones.csv')
 phones[is.na(phones)] <- 0 # NA means phone does not have camera
@@ -31,7 +39,9 @@ phones <- phones[, -c(1, 9, 10)] # removing name, height, width beacause they ar
 # phones <- phones %>% group_by(brand) %>% mutate(brand = mean(price)) # target encoding
 ```
 
-```{r model}
+### Model
+
+```{r model, echo=TRUE}
 model <- ranger(price~., data = phones, num.trees = 50)
 ```
 
@@ -39,17 +49,21 @@ model <- ranger(price~., data = phones, num.trees = 50)
 explainer <- DALEX::explain(model = model, data = phones[,-8], y = phones$price) 
 ```
 
-In our data set there were some observations, which had similar feature but different prices. We wanted to check how it will look in our model predictions. 
+### Local explainations
+
+In the first step of our XAI we focused on instance level explainations - analysis of single predictions and how each feature influence their values. We used Breakdown, SHAP, Lime and Ceteris Paribus profiles to show dependencies and draw conclusions. The drawback of those methods is the fact that we cannot assume that those explainations are true in general for our data - for each observation results can differ greatly. Therefore, we decided to present only the most interesting observations we found during our research, to show how identical parameters, but different brand can lead to totally different prices, or viceversa.
 
 ### Example 1
 
 ```{r breakdown, fig.width=15, fig.height=8}
+kable(phones[c(20,246),])
+
 bd_1 <- predict_parts(explainer, new_observation = phones[20,], type = "break_down")
 
 bd_2 <- predict_parts(explainer, new_observation = phones[246,], type = "break_down")
 
-plot1 <- plot(bd_1)
-plot2 <- plot(bd_2)
+plot1 <- plot(bd_1, title='Breakdown profile for record 20')
+plot2 <- plot(bd_2, title='Breakdown profile for record 246')
 grid.arrange(plot1, plot2, ncol=2)
 ```
 
@@ -57,9 +71,14 @@ Above we can see two observations which vary three features - *ram_gb*, *brand* 
 
 ### Example 2
 
+
+In our data set there were some observations, which had similar features but different prices. We wanted to check how it will look in our model predictions. 
+
 Below we can see two phones, which have similar values in many features, in two (*battery_mAh* and *diag*) second phone has better values than first one. Even though price of first phone is three times higher according to our model. The only difference not mentioned above between them is brand - first one is iPhone. That seems to be conclusion consistent with the reality.
 
-```{r lime}
+```{r lime, fig.width=15, fig.height=8}
+kable(phones[c(39,300),])
+
 lime_1 <- predict_surrogate(explainer = explainer, new_observation = phones[39,-8], n_features = 7, 
                               n_permutations = 1000, type = "lime")
 #lime_2 <- predict_surrogate(explainer = explainer, new_observation = phones[48,-8], n_features = 5, 
@@ -79,28 +98,15 @@ plot3 <- plot(lime_3)
 grid.arrange(plot1, plot3, ncol=2)
 #grid.arrange(plot39, plot300, ncol=2)
 
-kable(phones[c(39,300),-8])
-
 ```
 
 ### Example 3
 
-```{r cp}
-cp_1 <- predict_profile(explainer,phones[1,-8])
-plot(cp_1)
-```
+```{r shap, fig.width=15, fig.height=8}
+pred <- data.frame(predict(model, phones[c(74,131),])$predictions)
+colnames(pred) <- "prediction"
+kable(cbind(phones[c(74,131),], pred))
 
-```{r ciekawe_obserwacje}
-# 246 & 20 - praktycznie te same parametry, różne marki, cena różna o 700
-# 74 & 131 - Apple, słabe parametry a cena wysoka
-# 39 48 300 354 - Apple vs Motorola - praktycznie te same parametry, diametralna róznica ceny 
-```
-
-### Yyyy?
-
-Cieeeeeekaaaawostka, ktoś coś?
-
-```{r shap}
 shap_1 <- predict_parts(explainer, new_observation = phones[74,], type = "shap", B = 10)
 
 shap_2 <- predict_parts(explainer, new_observation = phones[131,], type = "shap", B = 10)
@@ -110,12 +116,41 @@ plot2 <- plot(shap_2)
 grid.arrange(plot1, plot2, ncol=2)
 ```
 
-```{r bd}
-break_1 <- predict_parts(explainer, new_observation = phones[74,], type = "break_down")
+In this example, there are compared two different models of Apple phones, but having the same parameters in terms of the model.
+Not surprisingly, predicted price is the same for both of them. What might be more interesting, is the fact that model predicts much lower price, than the real price.
+Trying to explain this phenomenon, there were created two shap plots for these apple models. On the charts we can find the answer to the problem of bad price prediction.
+It appreared, that the most influential variable making the price higher is brand name.
+Moreover, two other factors driving the price increase, which are front and back camera parameters, are average compared to the different phone models.
+The above facts lead to conclusion, that there might be artificial bias to the price based on the brand name.
 
-break_2 <- predict_parts(explainer, new_observation = phones[131,], type = "break_down")
+### Example 4
 
-plot11 <- plot(break_1)
-plot12 <- plot(break_2)
+Another pair of observations we analyzed were two phones, made by different manufacturer, with totally different parameters and prices.
+
+```{r cp, fig.width=15, fig.height=8}
+kable(phones[c(58,73),])
+cp2 <- predict_profile(explainer, new_observation = phones[c(58,73),], grid_points = 201)
+plot(cp2, color = "_ids_") # 58 65  # 58 62
+```
+
+Ceteris Paribus profile shows us different influence of some features concerning those two mobile phones. The biggest contrast we can observe in case of *battery_mAh*, which lower the price significantly in case of OPPO phone, and increases when it comes to Apple one, leading to the same prediction for both if the value exceeds 5000 mAh. It's quite surprising, because in case of the first one such battery parameters should lead to bigger price. Another difference we can observe in `front_camera_mpix` influence - whereas above ~ 15 Mpix we reach similar price, for smaller values it causes prediction's increase for Apple, and steady value for OPPO (for both peaks around 10 Mpix value). Once more those impacts are unexpected, because OPPO phone has much better front camera. 
+
+```{r bd, fig.width=15, fig.height=8}
+
+break_1 <- predict_parts(explainer, new_observation = phones[58,], type = "break_down")
+
+break_2 <- predict_parts(explainer, new_observation = phones[73,], type = "break_down")
+
+plot11 <- plot(break_1, title= 'Breakdown profile for record 59')
+plot12 <- plot(break_2, title= 'Breakdown profile for record 77')
 grid.arrange(plot11, plot12, ncol=2)
 ```
+
+Comparing explainations from above with Breakdown profile, we can identify possible reasons for surprising results we obtained. In case of OPPO phone, ...   
+
+```{r ciekawe_obserwacje}
+# 246 & 20 - praktycznie te same parametry, różne marki, cena różna o 700
+# 74 & 131 - Apple, słabe parametry a cena wysoka
+# 39 48 300 354 - Apple vs Motorola - praktycznie te same parametry, diametralna róznica ceny 
+```
+
