@@ -146,7 +146,7 @@ plot12 <- plot(break_2, title= 'Breakdown profile for record 77')
 grid.arrange(plot11, plot12, ncol=2)
 ```
 
-Comparing explainations from above with Breakdown profile, we can identify possible reasons for surprising results we obtained. In case of OPPO phone, ...   
+Comparing explainations from above with Breakdown profile, we can identify possible reasons for surprising results we obtained. In case of OPPO phone we can identify *ram_gb* feature as the one that influences our prediction (positively) the most. Other features have minimal impact compared to it. As for the Apple phone, *flash_gb* has the biggest contribution, however, there are much more negative influences from other features, which are visible also on the Ceteris Paribus plot - on most of them this observation lies in the "lower" part of the chart, due to weak parameters, which turn out to be positive only from a certain value.  
 
 ```{r ciekawe_obserwacje}
 # 246 & 20 - praktycznie te same parametry, różne marki, cena różna o 700
