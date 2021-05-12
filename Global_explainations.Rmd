@@ -37,7 +37,7 @@ phones <- phones[phones$back_camera_mpix < 90 &
                    phones$flash_gb < 400 &
                    phones$front_camera_mpix < 40, ]
 phones <- phones[, -c(1, 9, 10)] # removing name, height, width beacause they are useless
-# phones <- phones %>% group_by(brand) %>% mutate(brand = mean(price)) # target encoding
+phones <- phones %>% group_by(brand) %>% mutate(brand = mean(price)) # target encoding
 ```
 
 ### Model
@@ -80,3 +80,21 @@ plot(fi_rf)
 
 The most important variables for our model are `ram_gb`, `flash_gb` and, depending on the permutation, `brand` or `front_camera_mpix`. However, all those 4 variables are similar in terms of importance and they differ (not significantly but still) from the rest of the features. These conclusions overlap with those we drew from local explainations - for selected samples analyzed in previous section, storage related variables and `brand` had great impact on our prediction. In general, it means that it is storage size, brand and camera quality that influence mobile phone price the most.
 
+### Partial Dependence Profile
+
+```{r}
+pdp <- model_profile(explainer, variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'))
+plot(pdp, geom = "profiles")
+```
+
+```{r}
+pdp_1 <- model_profile(explainer, variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'), N = 1000, grid_points = 100)
+pdp_2 <- model_profile(explainer, variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'), N = 100, grid_points = 100)
+pdp_1$agr_profiles$`_label_` <- "1000 observations"
+pdp_2$agr_profiles$`_label_` <- "100 observations"
+plot(pdp_1, pdp_2)
+```
+
+We have created PDP plots for 4 most important variables for the model. As we can observe, as the variable grows, so does the price increase. The only exception is the `front_camera_mpix` column.
+
+Additionally, we have decided to compare results of the PDP depanding on number of observations. We realized that PDP with more observations gives higher price forecasts, especially when we talk about lower prices.
