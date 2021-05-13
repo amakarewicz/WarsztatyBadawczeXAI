@@ -98,3 +98,29 @@ plot(pdp_1, pdp_2)
 We have created PDP plots for 4 most important variables for the model. As we can observe, as the variable grows, so does the price increase. The only exception is the `front_camera_mpix` column.
 
 Additionally, we have decided to compare results of the PDP depanding on number of observations. We realized that PDP with more observations gives higher price forecasts, especially when we talk about lower prices.
+
+
+### Accumulated Local Dependence 
+
+```{r}
+ale_1 <- model_profile(explainer,variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'), N = 1000, grid_points = 100, type = "accumulated")
+ale_2 <- model_profile(explainer,variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'), N = 100, grid_points = 100, type = "accumulated")
+
+ale_1$agr_profiles$`_label_` <- "1000 observations"
+ale_2$agr_profiles$`_label_` <- "100 observations"
+plot(ale_1, ale_2)
+```
+
+Here we have created ALE plots for 4 most important variables for the model. They are quite similar to the PDP ones, also grow for *brand*, *flash_gb* and *ram_gb*. This time it even a little bit grows for *front_camera_mpix* but only in some intervals.
+
+This time, in most cases, for less observations we see slightly higher priedictions.
+
+### PDP vs ALE
+
+```{r}
+ale_1$agr_profiles$`_label_` <- "ALE"
+pdp_1$agr_profiles$`_label_` <- "PDP"
+plot(ale_1, pdp_1)
+```
+
+There are some differences between PDP and ALE, for some features (*front_camera_mpix* and *ram_gb*) PDP predicts slightly higher price, for other features ALE predicts higher.But in general, the shape of chart for feature between PDP and ALE remains the same. 
