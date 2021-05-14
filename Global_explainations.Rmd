@@ -14,7 +14,7 @@ library(knitr)
 library(lime)
 library(gridExtra)
 library(dplyr)
-set.seed(123)
+#set.seed(123)
 
 model_type.dalex_explainer <- DALEXtra::model_type.dalex_explainer
 predict_model.dalex_explainer <- DALEXtra::predict_model.dalex_explainer
@@ -74,11 +74,11 @@ Given the values of the metrics above, we can conclude that our model performs w
 ### Feature importance
 
 ```{r plot_rf, echo=FALSE}
-fi_rf <- model_parts(explainer, B = 10)
+fi_rf <- model_parts(explainer, B = 5000)
 plot(fi_rf)
 ```
 
-The most important variables for our model are `ram_gb`, `flash_gb`, `brand` or `front_camera_mpix`, with bigger or lower importance depending on the permutation. However, on average all those 4 variables are similar in terms of importance and they differ (not significantly but still) from the rest of the features. These conclusions overlap with those we drew from local explainations - for selected samples analyzed in previous section, storage related variables and `brand` had great impact on our prediction. In general, it means that it is storage size, brand and camera quality that influence mobile phone price the most.
+The most important variables for our model are `brand`, `ram_gb`, `flash_gb`, and `front_camera_mpix`, with bigger or lower importance depending on the permutation. However, on average all those 4 variables are similar in terms of importance and they differ (not significantly but still) from the rest of the features. These conclusions overlap with those we drew from local explainations - for selected samples analyzed in previous section, storage related variables and `brand` had great impact on our prediction. In general, it means that it is storage size, brand and camera quality that influence mobile phone price the most.
 
 ### Partial Dependence Profile
 
