@@ -76,6 +76,7 @@ a <- c("Unique","Total","Percent")
 b <- c(length(unique(data$name)),dim(data)[1], length(unique(data$name))/dim(data)[1])
 t <- data.frame(t(b), row.names = NULL)
 colnames(t) <- a
+row.names(t) <- 'name'
 kable(t)
 ```
 ### Numerical variables
@@ -148,7 +149,9 @@ bin_width <- floor((max(data$price, na.rm=TRUE)-min(data$price, na.rm=TRUE))/n_b
 plot1 <- ggplot(data, aes(x=price)) +   
    geom_histogram(aes(y=..density..),colour="darkorchid",fill="thistle2", binwidth = bin_width, boundary = 0) + 
    geom_density(aes(y=..density..), colour = "plum4", size=1.5)+
-   labs(x = "Price in PLN", y = "Density")
+   labs(x = "Price in PLN", y = "Density") +
+    ggtitle('Target variable distribution')
+
 
 plot2 <- ggplot(data, aes(x="price", y=price)) +
   geom_boxplot(color="orange", fill="khaki1",lwd=1) + coord_flip()
@@ -174,7 +177,9 @@ data %>%
   geom_violin(aes(fill=brand)) +
   geom_boxplot(width = 0.08) +
   scale_fill_brewer(palette="Accent") + theme_classic()+
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+    ggtitle('Target variable distribution for 4 most common brands')
+
 ```
 
 ### Correlations
