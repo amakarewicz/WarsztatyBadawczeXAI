@@ -37,7 +37,7 @@ phones <- phones[phones$back_camera_mpix < 90 &
                    phones$flash_gb < 400 &
                    phones$front_camera_mpix < 40, ]
 phones <- phones[, -c(1, 9, 10)] # removing name, height, width beacause they are useless
-phones <- phones %>% group_by(brand) %>% mutate(brand = mean(price)) # target encoding
+# phones <- phones %>% group_by(brand) %>% mutate(brand = mean(price)) # target encoding
 ```
 
 ### Model
@@ -74,8 +74,8 @@ Given the values of the metrics above, we can conclude that our model performs w
 ### Feature importance
 
 ```{r plot_rf, echo=FALSE}
-fi_rf <- model_parts(explainer, B = 5000)
-plot(fi_rf)
+# fi_rf <- model_parts(explainer, B = 5000)
+# plot(fi_rf)
 ```
 
 The most important variables for our model are `brand`, `ram_gb`, `flash_gb`, and `front_camera_mpix`, with bigger or lower importance depending on the permutation. However, on average all those 4 variables are similar in terms of importance and they differ (not significantly but still) from the rest of the features. These conclusions overlap with those we drew from local explainations - for selected samples analyzed in previous section, storage related variables and `brand` had great impact on our prediction. In general, it means that it is storage size, brand and camera quality that influence mobile phone price the most.
@@ -83,16 +83,16 @@ The most important variables for our model are `brand`, `ram_gb`, `flash_gb`, an
 ### Partial Dependence Profile
 
 ```{r}
-pdp <- model_profile(explainer, variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'))
-plot(pdp, geom = "profiles")
+# pdp <- model_profile(explainer, variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'))
+# plot(pdp, geom = "profiles")
 ```
 
 ```{r}
-pdp_1 <- model_profile(explainer, variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'), N = 1000, grid_points = 100)
-pdp_2 <- model_profile(explainer, variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'), N = 100, grid_points = 100)
-pdp_1$agr_profiles$`_label_` <- "1000 observations"
-pdp_2$agr_profiles$`_label_` <- "100 observations"
-plot(pdp_1, pdp_2)
+pdp_1 <- model_profile(explainer, variables = c('battery_mAh', 'ram_gb', 'flash_gb'), grid_points = 100)
+pdp_2 <- model_profile(explainer, variables = c('battery_mAh', 'front_camera_mpix'), grid_points = 100)
+# pdp_1$agr_profiles$`_label_` <- "1000 observations"
+# pdp_2$agr_profiles$`_label_` <- "100 observations"
+plot(pdp_1)
 ```
 
 We have created PDP plots for 4 most important variables for the model. As we can observe, as the variable grows, so does the price increase. The only exception is the `front_camera_mpix` column.
@@ -103,12 +103,12 @@ Additionally, we have decided to compare results of the PDP depanding on number 
 ### Accumulated Local Dependence 
 
 ```{r}
-ale_1 <- model_profile(explainer,variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'), N = 1000, grid_points = 100, type = "accumulated")
-ale_2 <- model_profile(explainer,variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'), N = 100, grid_points = 100, type = "accumulated")
-
-ale_1$agr_profiles$`_label_` <- "1000 observations"
-ale_2$agr_profiles$`_label_` <- "100 observations"
-plot(ale_1, ale_2)
+# ale_1 <- model_profile(explainer,variables = c('ram_gb', 'flash_gb', 'front_camera_mpix'), N = 1000, grid_points = 100, type = "accumulated")
+# ale_2 <- model_profile(explainer,variables = c('front_camera_mpix'), N = 100, grid_points = 100, type = "accumulated")
+# 
+# ale_1$agr_profiles$`_label_` <- "1000 observations"
+# ale_2$agr_profiles$`_label_` <- "100 observations"
+# plot(ale_1, ale_2)
 ```
 
 Here we have created ALE plots for 4 most important variables for the model. They are quite similar to the PDP ones, also grow for *brand*, *flash_gb* and *ram_gb*. This time it even a little bit grows for *front_camera_mpix* but only in some intervals.
@@ -118,9 +118,9 @@ This time, in most cases, for less observations we see slightly higher priedicti
 ### PDP vs ALE
 
 ```{r}
-ale_1$agr_profiles$`_label_` <- "ALE"
-pdp_1$agr_profiles$`_label_` <- "PDP"
-plot(ale_1, pdp_1)
+# ale_1$agr_profiles$`_label_` <- "ALE"
+# pdp_1$agr_profiles$`_label_` <- "PDP"
+# plot(ale_1, pdp_1)
 ```
 
 There are some differences between PDP and ALE, for some features (*front_camera_mpix* and *ram_gb*) PDP predicts slightly higher price, for other features ALE predicts higher.But in general, the shape of chart for feature between PDP and ALE remains the same. 
