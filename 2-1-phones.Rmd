@@ -1,0 +1,56 @@
+---
+title: "2-1-phones"
+author: "Agata Kaczmarek, Agata Makarewicz, Jacek Wiśniewski"
+date: "23/05/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(GGally)
+```
+
+### Abstract
+
+### Introduction and Motivation
+
+### Related Work
+
+### Methodology
+
+#### Data description
+
+The presented chapter is a research carried out on the "phones.csv" dataset (?). This dataframe contains prices and technical parameters of the 442 phones. It is ment to be used to solve regresion problem. It contains 1 target variable `price` and 10 explanatory variables. The sample of mentioned data is presented below.
+
+```{r description}
+phones <- read.csv("./phones.csv")
+knitr::kable(head(phones, 3))
+```
+
+#### Exploratory Data Analysis (EDA)
+
+The first analysis carried out on the dataset was Exploratory Data Analysis. This research led to the conclusions, which were used during data preprocessing. Following points describe how the dataset has changed.
+
+* ***handling missing values:*** Two features containing missing values were identified; both related to camera parameters (`back_camera_mpix`, `front_camera_mpix`). Those values turned out to be meaningful, as they mean that given mobile phone has no camera (back or front). Given that information, NAs were imputed with constant value - 0.
+* ***removing outliers:*** Based on features distribution, some extreme values were identified in dataset's explanatory variables (`back_camera_mpix`, `front_camera_mpix`, `battery_mAh`, `flash_gb`), which would weaken the model's performance. There for they were removed.
+* ***dealing with unimportant and correlated features:*** The variable `name` has been omited, because it was practically unique in the dataset and naturally connected to `brand` feature. Moreover, `height_px` and `width_px` were deleted due to their strong correlation with `diag` feature (and with each other); this feature was considered as sufficient determinant of phone's dimensions.
+
+Below there are presented correlations for all numerical variables.
+
+```{r corr, fig.width=12}
+phones[is.na(phones)]<-0
+ggcorr(phones, method = c("everything", "pearson"), limits = c(0,1), label = TRUE, layout.exp = 2, hjust = 0.75)
+```
+
+#### Models
+
+
+
+### Results
+
+#### Local explainations
+
+#### Global explainations
+
+### Summary and conclusion
