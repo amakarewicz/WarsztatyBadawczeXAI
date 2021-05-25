@@ -15,13 +15,21 @@ library(GGally)
 
 ### Introduction and Motivation
 
-### Related Work
+Mobile phones, since their coming onto the market, have gradually entered people everyday life. According to GSMA, almost 70% of the world's population has one. This market has gained significant popularity in 2007, with the introduction of Apple's iPhone. It revolutionized the industry by offering features such as a touch screen interface and a virtual keyboard. The smartphone market has been steadily developing and growing since then, both in size, as well as in models and suppliers. Smartphone, due to its mobility and computer abilities, has become a source of entertainment, a communication tool, a search engine and so much more.
+
+Suppliers constantly outdo each other introducing new improvements, better cameras or batteries, to attract customers. One could wonder which of them (or whether all of them) cause the price increase. Another question is, whether the price depends on the manufacturer - are there certain producers whose phones are more expensive, no matter the parameters? The task of determining a relationship between a smartphone's features, brand, and the price is surely non-trivial.
+
+In such a problem, machine learning can be useful. Machine learning algorithms step into more and more areas of our life. We use them in risk analysis, medical diagnosis or credit approval, so why could they not be used in phones pricing? In general, we can distinguish two types of models: glass-box, which steps can be followed from inputs to outputs, and black-box, which do not have a readable way of determining predictions. In many cases, such as the one considered in this article, simple interpretable models aren't capable of dealing with our problem satisfyingly, so we turn to more complex, non-transparent ones, which grant us higher accuracy, but lower understanding, and therefore, lower trust. Explainable Artificial Intelligence (XAI) addresses this problem. It is a set of tools to help you understand and interpret predictions made by your machine learning models. With it, one can debug and improve model performance, and help others understand models' behaviour.
+
+In the article below, we deal with the problem of creating an explainable regressor for mobile phones prices. We build a black-box model and then use XAI methods to find out which features and brands contribute mostly to the final price. 
+
+### Related work
 
 ### Methodology
 
 #### Data description
 
-The presented chapter is a research carried out on the "phones.csv" dataset (?). This dataframe contains prices and technical parameters of the 442 phones. It is ment to be used to solve regresion problem. It contains 1 target variable `price` and 10 explanatory variables. The sample of mentioned data is presented below.
+The presented chapter is research carried out on the "phones.csv" dataset (?). This data frame contains prices and technical parameters of the 414 phones. It is meant to be used to solve regression problem. It contains 1 target variable `price` and 10 explanatory variables. The sample of mentioned data is presented below.
 
 ```{r description}
 phones <- read.csv("./phones.csv")
@@ -30,15 +38,15 @@ knitr::kable(head(phones, 3))
 
 #### Exploratory Data Analysis (EDA)
 
-The first analysis carried out on the dataset was Exploratory Data Analysis. This research led to the conclusions, which were used during data preprocessing. Following points describe how the dataset has changed.
+The first analysis carried out on the dataset was Exploratory Data Analysis. This research led to the conclusions, which were used during data preprocessing. The following points describe how the dataset has changed.
 
-* ***handling missing values:*** Two features containing missing values were identified; both related to camera parameters (`back_camera_mpix`, `front_camera_mpix`). Those values turned out to be meaningful, as they mean that given mobile phone has no camera (back or front). Given that information, NAs were imputed with constant value - 0.
-* ***removing outliers:*** Based on features distribution, some extreme values were identified in dataset's explanatory variables (`back_camera_mpix`, `front_camera_mpix`, `battery_mAh`, `flash_gb`), which would weaken the model's performance. There for they were removed.
-* ***dealing with unimportant and correlated features:*** The variable `name` has been omited, because it was practically unique in the dataset and naturally connected to `brand` feature. Moreover, `height_px` and `width_px` were deleted due to their strong correlation with `diag` feature (and with each other); this feature was considered as sufficient determinant of phone's dimensions.
+* ***handling missing values:*** Two features containing missing values were identified; both related to camera parameters (`back_camera_mpix`, `front_camera_mpix`). Those values turned out to be meaningful, as they mean that given mobile phone has no camera (back or front). Given that information, NAs were imputed with a constant value - 0.
+* ***removing outliers:*** Based on features distribution, some extreme values were identified in the dataset's explanatory variables (`back_camera_mpix`, `front_camera_mpix`, `battery_mAh`, `flash_gb`), which would weaken the model's performance. Therefore they were removed.
+* ***dealing with unimportant and correlated features:*** The variable `name` has been omitted, because it was practically unique in the dataset and naturally connected to the `brand` feature. Moreover, `height_px` and `width_px` were deleted due to their strong correlation with the `diag` feature (and with each other); this feature was considered as a sufficient determinant of the phone's dimensions.
 
 Below there are presented correlations for all numerical variables.
 
-```{r corr, fig.width=12}
+```{r corr, fig.width=12, fig.cap='Correlation matrix'}
 phones[is.na(phones)]<-0
 ggcorr(phones, method = c("everything", "pearson"), limits = c(0,1), label = TRUE, layout.exp = 2, hjust = 0.75)
 ```
@@ -54,3 +62,4 @@ ggcorr(phones, method = c("everything", "pearson"), limits = c(0,1), label = TRU
 #### Global explainations
 
 ### Summary and conclusion
+
