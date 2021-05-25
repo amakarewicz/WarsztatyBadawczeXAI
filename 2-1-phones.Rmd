@@ -53,7 +53,14 @@ ggcorr(phones, method = c("everything", "pearson"), limits = c(0,1), label = TRU
 
 #### Models
 
+Next step after EDA was creating prediction models. To compare results and find the best model for mentioned data, there were created 3 models: ranger, xgboost and svm. Every model used cross validation during trainning. Svm and xgboost models can't be trained using character variables so variable `brand` needed to be target encoded in these cases. There were used two measures to compare models results: root mean square error (rmse) and mean absolute error (mae). The results are presented in the table below:
 
+```{r models}
+models <- data.frame(rmse = c(547, 1515, 678), mae = c(295, 1033, 376), row.names = c('ranger', 'xgboost', 'svm'))
+knitr::kable(models)
+```
+
+Presented results clearly points, that ranger model is the best choice. This model was used in further analysis.
 
 ### Results
 

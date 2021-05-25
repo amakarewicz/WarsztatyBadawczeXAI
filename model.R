@@ -47,8 +47,21 @@ learner <- makeLearner("regr.ranger")
 cv <- makeResampleDesc("CV", iters = 5)
 # listMeasures(obj = "regr")
 resampled <- resample(learner, task, cv, measures = list(rmse, mae))
-resampled$aggr[2]
+results_ranger <- resampled$aggr
 # resampled$pred$data
 
+learner <- makeLearner("regr.xgboost")
+cv <- makeResampleDesc("CV", iters = 5)
+resampled <- resample(learner, task, cv, measures = list(rmse, mae))
+results_xgboost <- resampled$aggr
 
+learner <- makeLearner("regr.svm")
+cv <- makeResampleDesc("CV", iters = 5)
+resampled <- resample(learner, task, cv, measures = list(rmse, mae))
+results_svm <- resampled$aggr
+
+
+results_ranger
+results_xgboost
+results_svm
 
