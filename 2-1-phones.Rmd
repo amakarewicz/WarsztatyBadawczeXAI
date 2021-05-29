@@ -68,5 +68,9 @@ Presented results clearly points, that ranger model is the best choice. This mod
 
 #### Global explainations
 
+```{r , out.width="700", fig.align="center", echo=FALSE, fig.cap='Feature importance'}
+knitr::include_graphics('images/2-1-feature-importance.png')
+```
+
 ### Summary and conclusion
 
