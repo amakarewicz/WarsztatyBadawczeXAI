@@ -29,14 +29,14 @@ In the article below, we deal with the problem of creating an explainable regres
 
 #### Data description
 
-The presented chapter is research carried out on the "phones.csv" dataset (?). This data frame contains prices and technical parameters of the 414 phones. It is meant to be used to solve regression problem. It contains 1 target variable `price` and 10 explanatory variables. The sample of mentioned data is presented below.
+Research was carried out on the *phones* dataset provided by the lecturer i. e. data frame with prices and technical parameters of 414 phones. It contains ten explanatory variables and one target variable (`price`), therefore we deal with regression task. The sample of the data is presented below.
 
 ```{r description}
 phones <- read.csv("./phones.csv")
 knitr::kable(head(phones, 3))
 ```
 
-#### Exploratory Data Analysis (EDA)
+#### Exploratory Data Analysis & data preprocessing
 
 The first analysis carried out on the dataset was Exploratory Data Analysis. This research led to the conclusions, which were used during data preprocessing. The following points describe how the dataset has changed.
 

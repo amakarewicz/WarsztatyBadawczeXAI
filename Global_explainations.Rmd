@@ -74,8 +74,9 @@ Given the values of the metrics above, we can conclude that our model performs w
 ### Feature importance
 
 ```{r plot_rf, echo=FALSE}
-# fi_rf <- model_parts(explainer, B = 5000)
-# plot(fi_rf)
+fi_rf <- model_parts(explainer, B = 500)
+fi_rf$label <- 'phones dataset'
+plot(fi_rf)
 ```
 
 The most important variables for our model are `brand`, `ram_gb`, `flash_gb`, and `front_camera_mpix`, with bigger or lower importance depending on the permutation. However, on average all those 4 variables are similar in terms of importance and they differ (not significantly but still) from the rest of the features. These conclusions overlap with those we drew from local explainations - for selected samples analyzed in previous section, storage related variables and `brand` had great impact on our prediction. In general, it means that it is storage size, brand and camera quality that influence mobile phone price the most.
@@ -87,10 +88,10 @@ The most important variables for our model are `brand`, `ram_gb`, `flash_gb`, an
 # plot(pdp, geom = "profiles")
 ```
 
-```{r}
-pdp_1 <- model_profile(explainer, variables = c('battery_mAh', 'ram_gb', 'flash_gb'), grid_points = 100)
+```{r fig.height=10, fig.width=15}
+pdp_1 <- model_profile(explainer)
 pdp_2 <- model_profile(explainer, variables = c('battery_mAh', 'front_camera_mpix'), grid_points = 100)
-# pdp_1$agr_profiles$`_label_` <- "1000 observations"
+# pdp_1$agr_profiles$`_label_` <- ""
 # pdp_2$agr_profiles$`_label_` <- "100 observations"
 plot(pdp_1)
 ```
