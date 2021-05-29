@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(warning = FALSE)
 library(GGally)
+library(knitr)
 ```
 
 ### Abstract
@@ -38,18 +39,23 @@ knitr::kable(head(phones, 3))
 
 #### Exploratory Data Analysis & data preprocessing
 
-The first analysis carried out on the dataset was Exploratory Data Analysis. This research led to the conclusions, which were used during data preprocessing. The following points describe how the dataset has changed.
-
-* ***handling missing values:*** Two features containing missing values were identified; both related to camera parameters (`back_camera_mpix`, `front_camera_mpix`). Those values turned out to be meaningful, as they mean that given mobile phone has no camera (back or front). Given that information, NAs were imputed with a constant value - 0.
-* ***removing outliers:*** Based on features distribution, some extreme values were identified in the dataset's explanatory variables (`back_camera_mpix`, `front_camera_mpix`, `battery_mAh`, `flash_gb`), which would weaken the model's performance. Therefore they were removed.
-* ***dealing with unimportant and correlated features:*** The variable `name` has been omitted, because it was practically unique in the dataset and naturally connected to the `brand` feature. Moreover, `height_px` and `width_px` were deleted due to their strong correlation with the `diag` feature (and with each other); this feature was considered as a sufficient determinant of the phone's dimensions.
+**TODO**
 
 Below there are presented correlations for all numerical variables.
 
-```{r corr, fig.width=12, fig.cap='Correlation matrix'}
-phones[is.na(phones)]<-0
-ggcorr(phones, method = c("everything", "pearson"), limits = c(0,1), label = TRUE, layout.exp = 2, hjust = 0.75)
+```{r corr, fig.align="center", fig.cap='Correlation matrix'}
+knitr::include_graphics('images/2-1-correlation-matrix.png')
 ```
+
+```{r violin, fig.align="center", fig.cap='TODO'}
+knitr::include_graphics('images/2-1-eda-violin-plot.png')
+```
+
+This research led to the conclusions, which were used during data preprocessing. The following points describe how the dataset has changed.
+
+* ***handling missing values:*** Two features containing missing values were identified; both related to camera parameters (`back_camera_mpix`, `front_camera_mpix`). Those values turned out to be meaningful, as they mean that given mobile phone has no camera (back or front). Given that information, NAs were imputed with a constant value - 0.
+* ***removing outliers:*** Based on features distribution, some extreme values were identified in the dataset's explanatory variables (`back_camera_mpix`, `front_camera_mpix`, `battery_mAh`, `flash_gb`, `price`), which would weaken the model's performance. Therefore they were removed.
+* ***dealing with unimportant and correlated features:*** The variable `name` has been omitted, because it was practically unique in the dataset and naturally connected to the `brand` feature. Moreover, `height_px` and `width_px` were deleted due to their strong correlation with the `diag` feature (and with each other); this feature was considered as a sufficient determinant of the phone's dimensions.
 
 #### Models
 
@@ -66,11 +72,31 @@ Presented results clearly points, that ranger model is the best choice. This mod
 
 #### Local explainations
 
+```{r breakdown-table}
+kable(phones[c(20,246),-c(1,9,10)])
+```
+
+```{r breakdown-plot, fig.align="center", fig.cap='Breakdown profile for observations 20 and 246'}
+knitr::include_graphics('images/2-1-breakdown.png')
+```
+
+```{r lime-table}
+kable(phones[c(39,300),-c(1,9,10)])
+```
+
+```{r lime-plot, fig.align="center", fig.cap='A plot of results of LIME method for 40th and 319th observation'}
+knitr::include_graphics('images/2-1-lime.png')
+```
+
 #### Global explainations
 
-```{r , out.width="700", fig.align="center", echo=FALSE, fig.cap='Feature importance'}
+```{r feat-importance, fig.align="center", fig.cap='Feature importance'}
 knitr::include_graphics('images/2-1-feature-importance.png')
 ```
 
+
+```{r pdp, fig.align="center", fig.cap='Partial Dependence Profile (PDP)'}
+knitr::include_graphics('images/2-1-pdp.png')
+```
 ### Summary and conclusion
 
