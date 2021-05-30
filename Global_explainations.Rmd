@@ -47,7 +47,7 @@ model <- ranger(price~., data = phones, num.trees = 50)
 ```
 
 ```{r explainer,results=FALSE}
-explainer <- DALEX::explain(model = model, data = phones[,-8], y = phones$price) 
+explainer <- DALEX::explain(model = model, data = phones[,-8], y = phones$price, label="Random Forest - ranger") 
 ```
 
 ### Global explainations

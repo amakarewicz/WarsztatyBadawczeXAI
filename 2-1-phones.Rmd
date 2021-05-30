@@ -26,9 +26,9 @@ In the article below, we deal with the problem of creating an explainable regres
 
 ### Related work
 
-Ha Ngoc Anh (https://core.ac.uk/download/pdf/80990944.pdf) shows changes in mobile industry and competition between various smartphone companies and brands. There are also papers, which use Machine Learning tools to answer question of predicting prices by various models and neural networks. Ibrahim M. Nasser et.al. (https://philarchive.org/archive/KHIAFP) proves the point in predicting smartphones prices with use of neural networks. And Ritika Singh (@xai2-phones-eda) examines importance of various features in predicting smathphone prices.
+Ha Ngoc Anh (https://core.ac.uk/download/pdf/80990944.pdf) shows changes in the mobile industry and competition between various smartphone companies and brands. There are also papers, which use Machine Learning tools to answer the question of predicting prices by various models and neural networks. Ibrahim M. Nasser et.al. (https://philarchive.org/archive/KHIAFP) proves the point in predicting smartphone prices with the use of neural networks. And Ritika Singh (@xai2-phones-eda) examines the importance of various features in predicting smartphone prices.
 
-In this article Explainable Artificial Intelligence methods were used to address problem. They were described by Przemysław Biecek et.al. in "Explanatory Model Analysis" book (@EMA), with local methods as Break-down, Shapley and Ceteris-Paribus; and global as Partial-dependence profiles being explained there. Also more explanations about XAI are to be found in articles about LIME (@xai1-lime) and ALE (@xai1-ale) plots.
+In this article Explainable Artificial Intelligence methods were used to address the problem. They were described by Przemysław Biecek et.al. in "Explanatory Model Analysis" book (@EMA), with local methods as Break-down, Shapley and Ceteris-Paribus; and global as Partial-dependence profiles being explained there. Also, more explanations about XAI are to be found in articles about LIME (@xai1-lime) and ALE (@xai1-ale) plots.
 
 
 
@@ -82,47 +82,49 @@ Ranger model results have been analyzed using Explainable Artificial Inteligence
 
 #### Local explainations
 
-In the first step of our XAI the focuse was on instance level explainations - analysis of single predictions and how each feature influence their values. Break down, SHAP, Lime and Ceteris Paribus profiles were used to show dependencies and draw conclusions. The drawback of those methods is that for each observation results can differ greatly. That is why they cannot be used to assume general ideas for whole data set. Therefore below we present only the most interesting observations found during the research. They were grouped into pairs to show how identical parameters, but different brands can lead to totally different prices, or viceversa.
+In the first step of our XAI, the focus was on instance level explanations - analysis of single predictions and how each feature influences their values. Break down, SHAP, Lime and Ceteris Paribus profiles were used to show dependencies and draw conclusions. The drawback of those methods is that for each observation results can differ greatly. That is why they cannot be used to assume general ideas for a whole data set. Therefore below we present only the most interesting observations found during the research. They were grouped into pairs to show how identical parameters, but different brands can lead to totally different prices or vice versa.
 
 #### First example
 
 
 ```{r breakdown-table}
-kable(phones[c(21,263),-c(1,9,10)])
+kable(phones[c(21,263),-c(1,9,10)], row.names=FALSE)
 ```
 
-```{r breakdown-plot20, fig.align="center", fig.cap='Breakdown profile for observation 21'}
-knitr::include_graphics('images/2-1-breakdown-21.png')
+```{r breakdown-plot20, fig.align="center", fig.cap='Breakdown profile for observation 20'}
+knitr::include_graphics('images/2-1-breakdown_20.png')
 ```
 
-```{r breakdown-plot246, fig.align="center", fig.cap='Breakdown profile for observation 636'}
-knitr::include_graphics('images/2-1-breakdown-263.png')
+```{r breakdown-plot246, fig.align="center", fig.cap='Breakdown profile for observation 246'}
+knitr::include_graphics('images/2-1-breakdown_246.png')
 ```
 
-Above we can see two observations which vary three features - *ram_gb*, *brand* and *diag*. Samsung has bigger diagonal, but less RAM GB and is more expensive by 200, whereas this difference in reality is higher, Samsung is more expensive by 700. There are also differences in impact of features - in first *batter)mAh* has positive impact and in second negative. In the first case for our model the most important were *ram_gb*, *diag* and *brand* (in this order), in second *ram_gb*, *brand* and *front_camera_px*. The question is, whether in reality *brand* does not have bigger impact on price than showed here? 
+Shown above two observations (img_bd_21, img_bd_263) vary three features - *ram_gb*, *brand* and *diag*. It is visible on these two Breakdown charts that Samsung has a bigger diagonal, but less RAM GB and according to the model is more expensive by 200. However, this difference in reality is higher, Samsung is more expensive by 700. There are also differences in the impact of features - in first *batter_mAh* has a positive impact and in the second negative. In the first case for model the most important were *ram_gb*, *diag* and *brand* (in this order), in second *ram_gb*, *brand* and *front_camera_px*. The question is, whether in reality *brand* does not have bigger impact on price than shown here? 
 
 #### Second example
 
-In our data set there were some observations, which had similar features but different prices. We wanted to check how it will look in our model predictions. 
-
-Below we can see two phones, which have similar values in many features, in two (*battery_mAh* and *diag*) second phone has better values than first one. Even though price of first phone is three times higher according to our model. The only difference not mentioned above between them is brand - first one is iPhone. That seems to be conclusion consistent with the reality.
 
 ```{r lime-table}
-kable(phones[c(39,300),-c(1,9,10)])
+kable(phones[c(40,319),-c(1,9,10)], row.names=FALSE)
 ```
 
-```{r lime-plot, fig.align="center", fig.cap='A plot of results of LIME method for 40th and 319th observation'}
-knitr::include_graphics('images/2-1-lime.png')
+```{r lime-plot-40, fig.align="center", fig.cap='A plot of results of LIME method for 40 observation'}
+knitr::include_graphics('images/2-1-lime-40.png')
 ```
+
+```{r lime-plot-319, fig.align="center", fig.cap='A plot of results of LIME method for 319 observation'}
+knitr::include_graphics('images/2-1-lime-319.png')
+```
+
+On LIME plots (img_lime_40, img_lime_319) two phones, which have similar values in many features, in two (*battery_mAh* and *diag*) second phone (img_lime_319) has better values than first one (img_lime_40). Even though the price of the first phone is three times higher according to our model. The only difference not mentioned above between them is a brand - the first one is iPhone. That seems to be a conclusion consistent with reality.
 
 #### Third example
 
-Ceteris Paribus profile shows us different influence of some features concerning those two mobile phones. The biggest contrast we can observe in case of *battery_mAh*, which lower the price significantly in case of OPPO phone, and increases when it comes to Apple one, leading to the same prediction for both if the value exceeds 5000 mAh. It's quite surprising, because in case of the first one such battery parameters should lead to bigger price. Another difference we can observe in `front_camera_mpix` influence - whereas above ~ 15 Mpix we reach similar price, for smaller values it causes prediction's increase for Apple, and steady value for OPPO (for both peaks around 10 Mpix value). Once more those impacts are unexpected, because OPPO phone has much better front camera. 
+```{r ceteris, fig.align="center", fig.cap='Ceteris Paribus profile'}
+knitr::include_graphics('images/2-1-ceteris-paribus.jpg')
+```
 
-//czy to to nwm, do przemyślenia
-
-Comparing explainations from above with Breakdown profile, we can identify possible reasons for surprising results we obtained. In case of OPPO phone we can identify *ram_gb* feature as the one that influences our prediction (positively) the most. Other features have minimal impact compared to it. As for the Apple phone, *flash_gb* has the biggest contribution, however, there are much more negative influences from other features, which are visible also on the Ceteris Paribus plot - on most of them this observation lies in the "lower" part of the chart, due to weak parameters, which turn out to be positive only from a certain value.  
-
+Ceteris Paribus profile shows different influence of some features concerning (img_ceteris_59, img_ceteris_77) two mobile phones. The biggest contrast we can observe in case of *battery_mAh*, which lowers the price significantly in case of OPPO phone, and increases when it comes to Apple one, leading to the same prediction for both if the value exceeds 5000 mAh. It is quite surprising because in case of the first one such battery parameters should lead to a bigger price. Another difference which can be observed in `front_camera_mpix` influence - whereas above ~ 15 Mpix we reach similar price, for smaller values it causes prediction's increase for Apple, and steady value for OPPO (for both peaks around 10 Mpix value). Once more those impacts are unexpected because OPPO phone has a much better front camera. 
 #### Global explainations
 
 This part of the report explains model's predictions using all of the records from dataset.
@@ -137,4 +139,8 @@ Feature importance plot presents which variable has the most significant impact 
 knitr::include_graphics('images/2-1-pdp.png')
 ```
 ### Summary and conclusion
+
+To summarize, according to all explanations shown above, there are several conclusions, which can be drawn. The biggest impact on the predicted price for the model had `brand`, `ram_gb` and `flash_gb`. The most expensive brands as Samsung and Apple have biased prices, they are higher than predicted by the model. What is important to highlight is that these conclusions were made for this specific data set, which had only eleven features at the beginning. This may mean, that for bigger data set, with more features, the results could be slightly different. Such sets can be the subject of further research.
+
+
 
