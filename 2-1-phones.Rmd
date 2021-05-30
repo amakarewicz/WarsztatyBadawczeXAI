@@ -39,19 +39,21 @@ knitr::kable(head(phones, 3))
 
 #### Exploratory Data Analysis & data preprocessing
 
-**TODO**
+At the beginning of our research we conducted EDA to get better understanding of the data we deal with. We mainly focused on the target variable and its distribution versus explanatory ones to identify potential influential features for our prediction. Below we present some results important for further work.
 
-Below there are presented correlations for all numerical variables.
-
-```{r corr, fig.align="center", fig.cap='Correlation matrix'}
-knitr::include_graphics('images/2-1-correlation-matrix.png')
+```{r mean-price, fig.align="center", fig.cap='TODO'}
+knitr::include_graphics('images/2-1-eda-mean-price.png')
 ```
 
 ```{r violin, fig.align="center", fig.cap='TODO'}
 knitr::include_graphics('images/2-1-eda-violin-plot.png')
 ```
 
-This research led to the conclusions, which were used during data preprocessing. The following points describe how the dataset has changed.
+```{r corr, fig.align="center", fig.cap='Correlation matrix'}
+knitr::include_graphics('images/2-1-correlation-matrix.png')
+```
+
+Based on the partially presented EDA, we needed to conduct simple data preprocessing before modeling. Following steps were executed:
 
 * ***handling missing values:*** Two features containing missing values were identified; both related to camera parameters (`back_camera_mpix`, `front_camera_mpix`). Those values turned out to be meaningful, as they mean that given mobile phone has no camera (back or front). Given that information, NAs were imputed with a constant value - 0.
 * ***removing outliers:*** Based on features distribution, some extreme values were identified in the dataset's explanatory variables (`back_camera_mpix`, `front_camera_mpix`, `battery_mAh`, `flash_gb`, `price`), which would weaken the model's performance. Therefore they were removed.
@@ -69,6 +71,8 @@ knitr::kable(models)
 Presented results clearly points, that ranger model is the best choice. This model was used in further analysis.
 
 ### Results
+
+Ranger model results have been analyzed using explainable artificial inteligence methods. Following paragraphs presents local and global explainations.
 
 #### Local explainations
 
@@ -90,10 +94,13 @@ knitr::include_graphics('images/2-1-lime.png')
 
 #### Global explainations
 
+This part of the report explains model's predictions using all of the records from dataset.
+
 ```{r feat-importance, fig.align="center", fig.cap='Feature importance'}
 knitr::include_graphics('images/2-1-feature-importance.png')
 ```
 
+Feature importance plot presents which variable has the most significant impact on prediction result. According to this plot, the most important variables for the ranger model were `ram_gb`, `flash_gb` and `brand`. Two of them are memory parameters which are arguably the most important phone's technical parameters. The third variable describes phone's brand name, which is not a technical parameter.
 
 ```{r pdp, fig.align="center", fig.cap='Partial Dependence Profile (PDP)'}
 knitr::include_graphics('images/2-1-pdp.png')
