@@ -26,6 +26,12 @@ In the article below, we deal with the problem of creating an explainable regres
 
 ### Related work
 
+Ha Ngoc Anh (https://core.ac.uk/download/pdf/80990944.pdf) shows changes in mobile industry and competition between various smartphone companies and brands. There are also papers, which use Machine Learning tools to answer question of predicting prices by various models and neural networks. Ibrahim M. Nasser et.al. (https://philarchive.org/archive/KHIAFP) proves the point in predicting smartphones prices with use of neural networks. And Ritika Singh (@xai2-phones-eda) examines importance of various features in predicting smathphone prices.
+
+In this article Explainable Artificial Intelligence methods were used to address problem. They were described by Przemysław Biecek et.al. in "Explanatory Model Analysis" book (@EMA), with local methods as Break-down, Shapley and Ceteris-Paribus; and global as Partial-dependence profiles being explained there. Also more explanations about XAI are to be found in articles about LIME (@xai1-lime) and ALE (@xai1-ale) plots.
+
+
+
 ### Methodology
 
 #### Data description
