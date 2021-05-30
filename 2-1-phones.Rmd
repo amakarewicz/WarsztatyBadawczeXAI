@@ -136,11 +136,14 @@ Feature importance plot presents which variable has the most significant impact 
 knitr::include_graphics('images/2-1-pdp.png')
 ```
 
+Partial Dependence Profile presents global dependencies between variables and target. The plot confirms observation from the previous plot, presenting a strong dependency between memory parameters and price. On the `front camera mpix` plot, there is an unnatural behaviour near 10-12 mpx, suggesting that phones with these specific parameters are the most expensive. After some research, it appeared that phones with these parameters are mostly made by expensive brands like Samsung and Apple. This leads to the conclusion, that in this case, the brand name was the variable that impacted price, not `front camera mpix`.
+
+
 ```{r pdp-brand, fig.align="center", fig.cap='Partial Dependence Profile (PDP) for brand variable'}
 knitr::include_graphics('images/2-1-pdp-brand.png')
 ```
 
-Partial Dependence Profile presents global dependencies between variables and target. The plot confirms observation from the previous plot, presenting a strong dependency between memory parameters and price. On the `front camera mpix` plot, there is an unnatural behaviour near 10-12 mpx, suggesting that phones with these specific parameters are the most expensive. After some research, it appeared that phones with these parameters are mostly made by expensive brands like Samsung and Apple. This leads to the conclusion, that in this case, the brand name was the variable that impacted price, not `front camera mpix`.
+Partial Dependence Profile looks slightly different for brand variable because it is a character variable. Surprisingly, this plot presents a weak brand name impact on price, unlike previous plots. Brands that increase the price are Apple, Archos, and CAT, but only one of those brands (Apple) is a big phone company.
 
 ### Summary and conclusion
 
