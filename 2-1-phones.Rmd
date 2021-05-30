@@ -20,7 +20,7 @@ Mobile phones, since their coming onto the market, have gradually entered people
 
 Suppliers constantly outdo each other introducing new improvements, better cameras or batteries, to attract customers. One could wonder which of them (or whether all of them) cause the price increase. Another question is, whether the price depends on the manufacturer - are there certain producers whose phones are more expensive, no matter the parameters? The task of determining a relationship between a smartphone's features, brand, and the price is surely non-trivial.
 
-In such a problem, machine learning can be useful. Machine learning algorithms step into more and more areas of our life. We use them in risk analysis, medical diagnosis or credit approval, so why could they not be used in phones pricing? In general, we can distinguish two types of models: glass-box, which steps can be followed from inputs to outputs, and black-box, which do not have a readable way of determining predictions. In many cases, such as the one considered in this article, simple interpretable models aren't capable of dealing with our problem satisfyingly, so we turn to more complex, non-transparent ones, which grant us higher accuracy, but lower understanding, and therefore, lower trust. Explainable Artificial Intelligence (XAI) addresses this problem. It is a set of tools to help you understand and interpret predictions made by your machine learning models. With it, one can debug and improve model performance, and help others understand models' behaviour.
+In such a problem, machine learning can be useful. Machine learning algorithms step into more and more areas of our life. We use them in risk analysis, medical diagnosis or credit approval, so why could they not be used in phones pricing? In general, we can distinguish two types of models: glass-box, which steps can be followed from inputs to outputs, and black-box, which do not have a readable way of determining predictions. In many cases, such as the one considered in this article, simple interpretable models are not capable of dealing with our problem satisfyingly, so we turn to more complex, non-transparent ones, which grant us higher accuracy, but lower understanding, and therefore, lower trust. Explainable Artificial Intelligence (XAI) addresses this problem. It is a set of tools to help you understand and interpret predictions made by your machine learning models. With it, one can debug and improve model performance, and help others understand models' behaviour.
 
 In the article below, we deal with the problem of creating an explainable regressor for mobile phones prices. We build a black-box model and then use XAI methods to find out which features and brands contribute mostly to the final price. 
 
@@ -43,9 +43,9 @@ phones <- read.csv("./phones.csv")
 knitr::kable(head(phones, 3))
 ```
 
-#### Exploratory Data Analysis & data preprocessing
+#### Exploratory Data Analysis and data preprocessing
 
-At the beginning of our research we conducted EDA to get better understanding of the data we deal with. We mainly focused on the target variable and its distribution versus explanatory ones to identify potential influential features for our prediction. Below we present some results important for further work.
+At the beginning of our research we conducted Exploratory Data Analysis to get better understanding of the data we deal with. We mainly focused on the target variable and its distribution versus explanatory ones to identify potential influential features for our prediction. Below we present some results important for further work.
 
 ```{r mean-price, fig.align="center", fig.cap='TODO'}
 knitr::include_graphics('images/2-1-eda-mean-price.png')
@@ -67,28 +67,45 @@ Based on the partially presented EDA, we needed to conduct simple data preproces
 
 #### Models
 
-Next step after EDA was creating prediction models. To compare results and find the best model for mentioned data, there were created 3 models: ranger, xgboost and svm. Every model used cross validation during trainning. Svm and xgboost models can't be trained using character variables so variable `brand` needed to be target encoded in these cases. There were used two measures to compare models results: root mean square error (rmse) and mean absolute error (mae). The results are presented in the table below:
+Next step after EDA was creating prediction models. To compare results and find the best model for mentioned data, there were created 3 models: ranger, xgboost and svm. Every model used cross validation during trainning. Svm and xgboost models cannot be trained using character variables so variable `brand` needed to be target encoded in these cases. There were used two measures to compare models results: root mean square error (rmse) and mean absolute error (mae). The results are presented in the table below.
 
 ```{r models}
 models <- data.frame(rmse = c(547, 1515, 678), mae = c(295, 1033, 376), row.names = c('ranger', 'xgboost', 'svm'))
 knitr::kable(models)
 ```
 
-Presented results clearly points, that ranger model is the best choice. This model was used in further analysis.
+Presented results clearly point, that ranger model is the best choice. This model was used in further analysis.
 
 ### Results
 
-Ranger model results have been analyzed using explainable artificial inteligence methods. Following paragraphs presents local and global explainations.
+Ranger model results have been analyzed using Explainable Artificial Inteligence methods. Following paragraphs present local and global explainations.
 
 #### Local explainations
 
+In the first step of our XAI the focuse was on instance level explainations - analysis of single predictions and how each feature influence their values. Break down, SHAP, Lime and Ceteris Paribus profiles were used to show dependencies and draw conclusions. The drawback of those methods is that for each observation results can differ greatly. That is why they cannot be used to assume general ideas for whole data set. Therefore below we present only the most interesting observations found during the research. They were grouped into pairs to show how identical parameters, but different brands can lead to totally different prices, or viceversa.
+
+#### First example
+
+
 ```{r breakdown-table}
-kable(phones[c(20,246),-c(1,9,10)])
+kable(phones[c(21,263),-c(1,9,10)])
 ```
 
-```{r breakdown-plot, fig.align="center", fig.cap='Breakdown profile for observations 20 and 246'}
-knitr::include_graphics('images/2-1-breakdown.png')
+```{r breakdown-plot20, fig.align="center", fig.cap='Breakdown profile for observation 21'}
+knitr::include_graphics('images/2-1-breakdown-21.png')
 ```
+
+```{r breakdown-plot246, fig.align="center", fig.cap='Breakdown profile for observation 636'}
+knitr::include_graphics('images/2-1-breakdown-263.png')
+```
+
+Above we can see two observations which vary three features - *ram_gb*, *brand* and *diag*. Samsung has bigger diagonal, but less RAM GB and is more expensive by 200, whereas this difference in reality is higher, Samsung is more expensive by 700. There are also differences in impact of features - in first *batter)mAh* has positive impact and in second negative. In the first case for our model the most important were *ram_gb*, *diag* and *brand* (in this order), in second *ram_gb*, *brand* and *front_camera_px*. The question is, whether in reality *brand* does not have bigger impact on price than showed here? 
+
+#### Second example
+
+In our data set there were some observations, which had similar features but different prices. We wanted to check how it will look in our model predictions. 
+
+Below we can see two phones, which have similar values in many features, in two (*battery_mAh* and *diag*) second phone has better values than first one. Even though price of first phone is three times higher according to our model. The only difference not mentioned above between them is brand - first one is iPhone. That seems to be conclusion consistent with the reality.
 
 ```{r lime-table}
 kable(phones[c(39,300),-c(1,9,10)])
@@ -97,6 +114,14 @@ kable(phones[c(39,300),-c(1,9,10)])
 ```{r lime-plot, fig.align="center", fig.cap='A plot of results of LIME method for 40th and 319th observation'}
 knitr::include_graphics('images/2-1-lime.png')
 ```
+
+#### Third example
+
+Ceteris Paribus profile shows us different influence of some features concerning those two mobile phones. The biggest contrast we can observe in case of *battery_mAh*, which lower the price significantly in case of OPPO phone, and increases when it comes to Apple one, leading to the same prediction for both if the value exceeds 5000 mAh. It's quite surprising, because in case of the first one such battery parameters should lead to bigger price. Another difference we can observe in `front_camera_mpix` influence - whereas above ~ 15 Mpix we reach similar price, for smaller values it causes prediction's increase for Apple, and steady value for OPPO (for both peaks around 10 Mpix value). Once more those impacts are unexpected, because OPPO phone has much better front camera. 
+
+//czy to to nwm, do przemyślenia
+
+Comparing explainations from above with Breakdown profile, we can identify possible reasons for surprising results we obtained. In case of OPPO phone we can identify *ram_gb* feature as the one that influences our prediction (positively) the most. Other features have minimal impact compared to it. As for the Apple phone, *flash_gb* has the biggest contribution, however, there are much more negative influences from other features, which are visible also on the Ceteris Paribus plot - on most of them this observation lies in the "lower" part of the chart, due to weak parameters, which turn out to be positive only from a certain value.  
 
 #### Global explainations
 

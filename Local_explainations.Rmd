@@ -13,6 +13,7 @@ library(ranger)
 library(knitr)
 library(lime)
 library(gridExtra)
+library(ggplot2)
 library(dplyr)
 set.seed(1)
 
@@ -55,15 +56,17 @@ In the first step of our XAI we focused on instance level explainations - analys
 
 ### Example 1
 
-```{r breakdown, fig.width=15, fig.height=8}
+```{r breakdown, fig.width=12, fig.height=8}
 kable(phones[c(20,246),])
 
 bd_1 <- predict_parts(explainer, new_observation = phones[20,], type = "break_down")
 
 bd_2 <- predict_parts(explainer, new_observation = phones[246,], type = "break_down")
 
-plot1 <- plot(bd_1, title='Breakdown profile for record 20')
-plot2 <- plot(bd_2, title='Breakdown profile for record 246')
+plot1 <- plot(bd_1, title='Breakdown profile for record 20')+ylim(1300,3000)
+plot1
+plot2 <- plot(bd_2, title='Breakdown profile for record 246')+ylim(1300,3000)
+plot2
 grid.arrange(plot1, plot2, ncol=2)
 ```
 
