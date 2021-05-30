@@ -125,6 +125,7 @@ knitr::include_graphics('images/2-1-ceteris-paribus.jpg')
 ```
 
 Ceteris Paribus profile shows different influence of some features concerning (img_ceteris_59, img_ceteris_77) two mobile phones. The biggest contrast we can observe in case of *battery_mAh*, which lowers the price significantly in case of OPPO phone, and increases when it comes to Apple one, leading to the same prediction for both if the value exceeds 5000 mAh. It is quite surprising because in case of the first one such battery parameters should lead to a bigger price. Another difference which can be observed in `front_camera_mpix` influence - whereas above ~ 15 Mpix we reach similar price, for smaller values it causes prediction's increase for Apple, and steady value for OPPO (for both peaks around 10 Mpix value). Once more those impacts are unexpected because OPPO phone has a much better front camera. 
+
 #### Global explainations
 
 This part of the report explains model's predictions using all of the records from dataset.
@@ -138,6 +139,9 @@ Feature importance plot presents which variable has the most significant impact 
 ```{r pdp, fig.align="center", fig.cap='Partial Dependence Profile (PDP)'}
 knitr::include_graphics('images/2-1-pdp.png')
 ```
+
+Partial Dependence Profile presents global dependencies between variables and target. The plot confirms observation from the previous plot, presenting a strong dependency between memory parameters and price. On the `front camera mpix` plot, there is an unnatural behavior near 10-12 mpx, suggesting that phones with these specific parameters are the most expensive. After some research, it appeared that phones with these parameters are mostly made by expensive brands like Samsung and Apple. This leads to the conclusion, that in this case, the brand name was the variable that impacted price, not `front camera mpix`.
+
 ### Summary and conclusion
 
 To summarize, according to all explanations shown above, there are several conclusions, which can be drawn. The biggest impact on the predicted price for the model had `brand`, `ram_gb` and `flash_gb`. The most expensive brands as Samsung and Apple have biased prices, they are higher than predicted by the model. What is important to highlight is that these conclusions were made for this specific data set, which had only eleven features at the beginning. This may mean, that for bigger data set, with more features, the results could be slightly different. Such sets can be the subject of further research.
