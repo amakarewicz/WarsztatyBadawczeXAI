@@ -1,7 +1,7 @@
 ---
 title: "2-1-phones"
 author: "Agata Kaczmarek, Agata Makarewicz, Jacek Wiśniewski"
-date: "23/05/2021"
+date: "30/05/2021"
 output: html_document
 ---
 
@@ -13,6 +13,10 @@ library(knitr)
 ```
 
 ### Abstract
+
+Mobile phone became indispensable item in our daily life. From a simple device enabling contacting other people, it developed into a tool facilitating web browsing, gaming, creating/playing multimedia and much more. Therefore, the choice of phone is an important decision, but given the wide variety of models available nowadays, it is sometimes hard to choose the best one and also easy to overpay.
+In this thesis, we analyze the phone market to investigate whether the prices of the phones depend only on their technical parameters, or some of them have an artificially higher price regarding the possessed functionalities. Research is conducted on the *phones* dataset, provided by the lecturer, containing prices and features of different phones. As a regressor, Random Forest from package *ranger* was chosen. 
+Given the type of the model (blackbox i.e. non-interpretable), we use Explainable Artificial Intelligence (XAI) methods, for both local and global explanations, to interpret its predictions and get to know which features influence them the most, and lower/raise the price of the phone.
 
 ### Introduction and Motivation
 
@@ -45,15 +49,19 @@ knitr::kable(head(phones, 3))
 
 At the beginning of our research, we conducted Exploratory Data Analysis to get a better understanding of the data we deal with. We mainly focused on the target variable and its distribution versus explanatory ones to identify potential influential features for our prediction. Below we present some results important for further work.
 
-```{r mean-price, fig.align="center", fig.cap='TODO'}
+```{r mean-price, out.width='700', fig.align="center", fig.cap='10 brands with the highest mean price of the phone'}
 knitr::include_graphics('images/2-1-eda-mean-price.png')
 ```
 
-```{r violin, fig.align="center", fig.cap='TODO'}
+Analyzing brands by the mean price of the phones produced, there can be identified a distinct leader, which is an Apple company. On average, a phone from it costs more than 3500 zlotys. In the top 10 brands, we can also see common ones such as Samsung or Huawei.
+
+```{r violin, fig.align="center", fig.cap='Phone price distribution for 4 most common brands'}
 knitr::include_graphics('images/2-1-eda-violin-plot.png')
 ```
 
-```{r corr, fig.align="center", fig.cap='Correlation matrix'}
+On the plot above we can identify some outliers in terms of price, especially a phone made by Samsung company, which costs 9000 zlotys. Concerning the Xiaomi brand, we can observe that despite being a popular choice, the price of a single phone is relatively low - no phones are exceeding 4000 zlotys. As for the Apple products, conclusions from the plot above are confirmed.
+
+```{r corr, fig.align="center", fig.cap='Correlation matrix for numeric features'}
 knitr::include_graphics('images/2-1-correlation-matrix.png')
 ```
 
@@ -123,8 +131,7 @@ knitr::include_graphics('images/2-1-ceteris-paribus.jpg')
 Ceteris Paribus profile shows the different influence of some features concerning (img_ceteris_59, img_ceteris_77) two mobile phones. The biggest contrast we can observe in the case of *battery_mAh*, which lowers the price significantly in the case of OPPO phone, and increases when it comes to Apple one, leading to the same prediction for both if the value exceeds 5000 mAh. It is quite surprising because in the case of the first one such battery parameters should lead to a bigger price. Another difference which can be observed in `front_camera_mpix` influence - whereas above ~ 15 Mpix we reach similar price, for smaller values it causes prediction's increase for Apple, and steady value for OPPO (for both peaks around 10 Mpix value). Once more those impacts are unexpected because the OPPO phone has a much better front camera. 
 
 #### Global explainations
-
-This part of the report explains the model's predictions using all of the records from the dataset.
+In the second step of our XAI analysis, we focused on dataset level explanations - analysis of all predictions together and how each feature affects their average value. We use Feature Importance and Partial Dependence Profile to show dependencies and draw conclusions. The advantage of those methods, in comparison to local profiles, is the fact that those explanations are true in general for our data; whereas for each observation results can differ greatly.
 
 ```{r feat-importance, fig.align="center", fig.cap='Feature importance'}
 knitr::include_graphics('images/2-1-feature-importance.png')
@@ -145,6 +152,6 @@ knitr::include_graphics('images/2-1-pdp-brand.png')
 
 Partial Dependence Profile looks slightly different for brand variable because it is a character variable. Surprisingly, this plot presents a weak brand name impact on price, unlike previous plots. Brands that increase the price are Apple, Archos, and CAT, but only one of those brands (Apple) is a big phone company.
 
-### Summary and conclusion
+### Summary and conclusions
 
 To summarize, according to all explanations shown above, there are several conclusions, which can be drawn. The biggest impact on the predicted price for the model had `brand`, `ram_gb` and `flash_gb`. The most expensive brands as Samsung and Apple have biased prices, they are higher than predicted by the model. What is important to highlight is that these conclusions were made for this specific data set, which had only eleven features at the beginning. This may mean, that for bigger data set, with more features, the results could be slightly different. Such sets can be the subject of further research.
