@@ -15,8 +15,8 @@ library(knitr)
 ### Abstract
 
 Mobile phone became indispensable item in our daily life. From a simple device enabling contacting other people, it developed into a tool facilitating web browsing, gaming, creating/playing multimedia and much more. Therefore, the choice of phone is an important decision, but given the wide variety of models available nowadays, it is sometimes hard to choose the best one and also easy to overpay.
-In this thesis, we analyze the phone market to investigate whether the prices of the phones depend only on their technical parameters, or some of them have an artificially higher price regarding the possessed functionalities. Research is conducted on the *phones* dataset, provided by the lecturer, containing prices and features of different phones. As a regressor, Random Forest from package *ranger* was chosen. 
-Given the type of the model (blackbox i.e. non-interpretable), we use Explainable Artificial Intelligence (XAI) methods, for both local and global explanations, to interpret its predictions and get to know which features influence them the most, and lower/raise the price of the phone.
+In this paper, we analyze the phone market to investigate whether the prices of the phones depend only on their technical parameters, or some of them have an artificially higher price regarding the possessed functionalities. Research is conducted on the *phones* dataset, provided by the lecturer, containing prices and features of different phones. As a regressor, Random Forest from package *ranger* was chosen. 
+Given the type of the model (blackbox i.e. non-interpretable), we use Explainable Artificial Intelligence (XAI) methods, for both local and global explanations, to interpret its predictions and get to know which features influence them the most, and raise (or lower) the price of the phone.
 
 ### Introduction and Motivation
 
@@ -49,17 +49,17 @@ knitr::kable(head(phones, 3))
 
 At the beginning of our research, we conducted Exploratory Data Analysis to get a better understanding of the data we deal with. We mainly focused on the target variable and its distribution versus explanatory ones to identify potential influential features for our prediction. Below we present some results important for further work.
 
-```{r mean-price, out.width='700', fig.align="center", fig.cap='10 brands with the highest mean price of the phone'}
+```{r mean-price, out.width='700', fig.align="center", fig.cap='Ten brands with the highest mean price of the phone among the observations from the dataset'}
 knitr::include_graphics('images/2-1-eda-mean-price.png')
 ```
 
-Analyzing brands by the mean price of the phones produced, there can be identified a distinct leader, which is an Apple company. On average, a phone from it costs more than 3500 zlotys. In the top 10 brands, we can also see common ones such as Samsung or Huawei.
+Analyzing brands by the mean price of the phones produced, there can be identified a distinct leader, which is an Apple company. On average, a phone from it costs more than 3500 PLN. In the top 10 brands, we can also see common ones such as Samsung or Huawei.
 
-```{r violin, fig.align="center", fig.cap='Phone price distribution for 4 most common brands'}
+```{r violin, fig.align="center", fig.cap='Phone price distribution for 4 most common brands among the observations from the dataset'}
 knitr::include_graphics('images/2-1-eda-violin-plot.png')
 ```
 
-On the plot above we can identify some outliers in terms of price, especially a phone made by Samsung company, which costs 9000 zlotys. Concerning the Xiaomi brand, we can observe that despite being a popular choice, the price of a single phone is relatively low - no phones are exceeding 4000 zlotys. As for the Apple products, conclusions from the plot above are confirmed.
+On the plot above we can identify some outliers in terms of price, especially a phone made by Samsung company, which costs 9000 PLN. Concerning the Xiaomi brand, we can observe that despite being a popular choice, the price of a single phone is relatively low - no phones are exceeding 4000 PLN. As for the Apple products, conclusions from the plot above are confirmed.
 
 ```{r corr, fig.align="center", fig.cap='Correlation matrix for numeric features'}
 knitr::include_graphics('images/2-1-correlation-matrix.png')
@@ -73,7 +73,7 @@ Based on the partially presented EDA, we needed to conduct simple data preproces
 
 #### Models
 
-The next step after EDA was creating prediction models. To compare results and find the best model for mentioned data, there were created 3 models: ranger, XGBoost and SVM. Every model used cross-validation during training. SVM and XGBoost models cannot be trained using character variables so variable `brand` needed to be target encoded in these cases. There were used two measures to compare models results: root mean square error (RMSE) and mean absolute error (MAE). The results are presented in the table below.
+The next step after EDA was creating prediction models. To compare results and find the best model for mentioned data, there were created 3 models: ranger, XGBoost and SVM. Every model used cross-validation during training. SVM and XGBoost models cannot be trained using categorical variables so variable `brand` needed to be target encoded in these cases. There were used two measures to compare models results: root mean square error (RMSE) and mean absolute error (MAE). The results are presented in the table below.
 
 ```{r models}
 models <- data.frame(rmse = c(547, 1515, 678), mae = c(295, 1033, 376), row.names = c('ranger', 'xgboost', 'svm'))

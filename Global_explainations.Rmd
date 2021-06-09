@@ -14,6 +14,7 @@ library(knitr)
 library(lime)
 library(gridExtra)
 library(dplyr)
+library(ggplot2)
 #set.seed(123)
 
 model_type.dalex_explainer <- DALEXtra::model_type.dalex_explainer
@@ -83,9 +84,9 @@ The most important variables for our model are `brand`, `ram_gb`, `flash_gb`, an
 
 ### Partial Dependence Profile
 
-```{r}
-# pdp <- model_profile(explainer, variables = c('brand', 'ram_gb', 'flash_gb', 'front_camera_mpix'))
-# plot(pdp, geom = "profiles")
+```{r pdp_cat, fig.height=7, fig.width=15}
+pdp <- model_profile(explainer, variables = c('brand'))
+plot(pdp) + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1, size=16), plot.margin = margin(10, 10, 30, 10))
 ```
 
 ```{r fig.height=10, fig.width=15}
