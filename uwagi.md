@@ -2,13 +2,13 @@
 Wstęp: 
 	
 * ~~MINOR: Thesis to praca dyplomowa, raczej work/paper/article~~
-* Każda pierwsza wzmianka pakietu Rowego powinna być poprzedzona cytacją
+* ~~Każda pierwsza wzmianka pakietu Rowego powinna być poprzedzona cytacją~~
 * ~~lower/raise pisane ze slashem jest raczej potoczne. Zamieniłybym to na or~~
-* 'According to GSMA, almost 70% of the world’s population has one.' takie zdania muszą mieć cytowanie
-* 'The smartphone market has been steadily developing and growing since then, both in size, as well as in models and suppliers.' - przydałoby się jakieś cytowanie badań rynku na ten temat\
-* 'We use them in risk analysis, medical diagnosis or credit approval' - tutaj na pewno potrzebna jest jakaś cytacja faktycznego użycia ML w tych dziedzinach. Ze dwie prace 
-* 'In general, we can distinguish two types of models' - potrzebne cytowanie, np. do książki Molnara lub Przemka
-* 'Explainable Artificial Intelligence (XAI) addresses this problem. It is a set of tools to help you understand and interpret predictions made by your machine learning models.' potrzebne cytowanie do jakichś materiałów o XAI
+* ~~'According to GSMA, almost 70% of the world’s population has one.' takie zdania muszą mieć cytowanie~~
+* ~~'The smartphone market has been steadily developing and growing since then, both in size, as well as in models and suppliers.' - przydałoby się jakieś cytowanie badań rynku na ten temat\~~
+* ~~'We use them in risk analysis, medical diagnosis or credit approval' - tutaj na pewno potrzebna jest jakaś cytacja faktycznego użycia ML w tych dziedzinach. Ze dwie prace~~ 
+* ~~'In general, we can distinguish two types of models' - potrzebne cytowanie, np. do książki Molnara lub Przemka~~
+* ~~'Explainable Artificial Intelligence (XAI) addresses this problem. It is a set of tools to help you understand and interpret predictions made by your machine learning models.' potrzebne cytowanie do jakichś materiałów o XAI~~
 
 * Generalnie akapit o XAI w related work nie do końca tam pasuje. Raczej powinien znaleźć się we wstępie tam gdzie jest po raz pierwszy wspomniane. W ogólności to Related work można zainkorporować do wstępu jako po prostu kolejny akapity
 * Każda metoda musi zostać zacytowana!
