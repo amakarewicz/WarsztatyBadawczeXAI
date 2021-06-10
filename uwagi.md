@@ -27,18 +27,17 @@ Główne wyniki pracy:
 * ~~MINOR: Raczej nie używa się 'zlotys' a zamiast tego PLN.~~
 * ~~Podpis do figury 2.3 `most common brands` brzmi niefortunnie ponieważ sugeruje że to są najbardziej popularne marki w ogólności. Warto podkreślić, że chodzi o obserwacje w zbiorze~~
 * ~~Podpis do figury 2.5 trochę od czapy~~
-* Podpis do figury 2.6 bardzo enigmatyczny. Jednak zwykle używa się pełnych zdań. 
-* ~~Dodatkowo sama tabela ze screena nie ma numerów wierszy do których się odnosicie~~
+* Podpis do figury 2.6 bardzo enigmatyczny. Jednak zwykle używa się pełnych zdań. ~~Dodatkowo sama tabela ze screena nie ma numerów wierszy do których się odnosicie~~
 * Ogólnie musicie wczuć się w osoby które czytają Waszą pracę ale nigdy w życiu nie widziały żadnej z tych metod na oczy. One nie będą widzieć co to są lokalne wyjaśnienia co dopiero break-down. Powinniście najpierw opisać trochę szerzej niż 3 zdania czym w ogóle te wyjaśnienia lokalne są, co dzięki nim można zbadać i dopiero potem przejść do prezentowania wyników. Nie zapomnijcie o cytacji (np. Molnara, Przemka, czy nawet mojej pracy o XAI)
 * Figury 2.7 2.8. mają bardzo skąpe podpisy. Tak jak w poprzedniej uwadze - musicie założyć że czytelnik nie ma pojęcia czym ta metoda w ogóle jest więc nie będzie wiedział jak ten wykres przeczytać. Polecam zajrzeć do artykułu o BD w celu pozyskania wskazówek jak obrazek opisać https://arxiv.org/pdf/1903.11420.pdf
 * Wyliczenia aby zaznaczyć który to jest przykład nie są najlepszym pomysłem, jeżeli już chcecie to odznaczyć to raczej jakimś nagłówkiem
 * Figura 2.9 - to samo co figura 2.6
 * Figury 2.10 2.11 to samo co 2.7 2.8
 * Figury 2.12 2.13 to samo co wyżej
-* Więcej o global explanations, tak żeby przedstawić to komuś kto nigdy tego nie widział na oczy
+* ~~Więcej o global explanations, tak żeby przedstawić to komuś kto nigdy tego nie widział na oczy~~
 * Wszystkie podpisy do globalnych są skąpe. Musicie wyjaśnić co na tych obrazkach widać. Nie bójcie się powtórzyć czegoś z tekstu. Generalnie figura wraz z podpisem powinna być zrozumiała (przynajmniej co do tego co na niej się znajduje) bez patrzenia w tekst. 
-* Opis i wnioski dotyczące FI mogłyby być trochę bardziej rozbudowane. Nie wspomnieliście stabilności mimo że prezentujecie boxploty.
-* Trochę brakuje odniesień między wyjaśnieniami. Np. przy FI można by wspomnieć o BD i jak mają się wyniki jednych do drugich.
+* ~~Opis i wnioski dotyczące FI mogłyby być trochę bardziej rozbudowane. Nie wspomnieliście stabilności mimo że prezentujecie boxploty.~~
+* Trochę brakuje odniesień między wyjaśnieniami. ~~Np. przy FI można by wspomnieć o BD i jak mają się wyniki jednych do drugich.~~
 * ~~Kategoryczne pdp wygląda bardzo słabo. Muszę ostro go przybliżyć żeby przeczytać podpisy słupków, dodatkowo nazwy na siebie nachodzą. Warto zedytować go i wrzucić nowy.~~ 
 * 'After some research, it appeared that phones with these parameters are mostly made by expensive brands like Samsung and Apple'. - na prezentacji pokazaliście super obrazek. Gdzie on się podział!? Taką pracę warto prezentowac :) Dodatkowo warto trochę rozbudować to zdanie, czym był research. Zawsze kiedy podejmuje się jakiś ciekawy wysiłek warto opisać go dokładnie nawet jeżeli jest to tylko zliczenie kilku obserwacji. Ta anomalia jest jedną z ciekawszych rzeczy w tym zbiorze więc aż się prosi o tabelę z jakąś dokładną analizą.
 * ~~MINOR: raczej nie ma takiego czegoś jak character variable - szybciej categorical, factor etc~~
