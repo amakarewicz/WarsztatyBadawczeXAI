@@ -129,3 +129,24 @@ month = {05},
 pages = {},
 title = {Exploratory Data Analysis and Customer Segmentation for Smartphones}
 }
+
+@article{2-1-feat-imp,
+  author = {Aaron Fisher and Cynthia Rudin and Francesca Dominici},
+  title = {All models are Wrong, but many are Useful: Learning a variable's importance by studying an entire class of prediction models simultaneously},
+  journal = {Journal of Machine Learning Research},
+  year = {2019},
+  volume = {20},
+  number = {177},
+  pages = {1-81},
+  url = {http://jmlr.org/papers/v20/18-760.html}
+}
+
+@article{2-1-pdp,
+    author = {Jerome H. Friedman},
+    title = {{Greedy Function Approximation: A Gradient Boosting Machine}},
+    journal = {Annals of Statistics},
+    year = {2000},
+    volume = {29},
+    pages = {1189--1232},
+    URL = {https://doi.org/10.1214/aos/1013203451}
+}
