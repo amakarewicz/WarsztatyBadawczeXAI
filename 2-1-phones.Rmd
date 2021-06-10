@@ -73,9 +73,9 @@ Based on the partially presented EDA, we needed to conduct simple data preproces
 
 #### Models
 
-The next step after EDA was creating prediction models. To compare results and find the best model for mentioned data, there were created 3 models: ranger, XGBoost and SVM. Every model used cross-validation during training. SVM and XGBoost models cannot be trained using categorical variables so variable `brand` needed to be target encoded in these cases. There were used two measures to compare models results: root mean square error (RMSE) and mean absolute error (MAE). The results are presented in the table below.
+The next step after EDA was creating prediction models. To compare results and find the best model for mentioned data, there were created 3 models: Random Forest from *ranger* package [@ranger], XGBoost from *mlr* package [@mlr] and SVM, also from the *mlr* package. For each of them, training using 5-fold cross-validation was performed. SVM and XGBoost models cannot be trained using categorical variables so variable `brand` needed to be target encoded in these cases. There were used two measures to compare models results: Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE). The results are presented in the table below.
 
-```{r models}
+```{r models, fig.cap='5-fold crossvalidation errors - Root Mean Squared Error and Mean Absolute Error - for each of the tested models (Random Forest, XGBoost, SVM)'}
 models <- data.frame(rmse = c(547, 1515, 678), mae = c(295, 1033, 376), row.names = c('ranger', 'xgboost', 'svm'))
 knitr::kable(models)
 ```

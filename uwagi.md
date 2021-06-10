@@ -26,7 +26,7 @@ Główne wyniki pracy:
 
 * ~~MINOR: Raczej nie używa się 'zlotys' a zamiast tego PLN.~~
 * ~~Podpis do figury 2.3 `most common brands` brzmi niefortunnie ponieważ sugeruje że to są najbardziej popularne marki w ogólności. Warto podkreślić, że chodzi o obserwacje w zbiorze~~
-* Podpis do figury 2.5 trochę od czapy
+* ~~Podpis do figury 2.5 trochę od czapy~~
 * Podpis do figury 2.6 bardzo enigmatyczny. Jednak zwykle używa się pełnych zdań. 
 * ~~Dodatkowo sama tabela ze screena nie ma numerów wierszy do których się odnosicie~~
 * Ogólnie musicie wczuć się w osoby które czytają Waszą pracę ale nigdy w życiu nie widziały żadnej z tych metod na oczy. One nie będą widzieć co to są lokalne wyjaśnienia co dopiero break-down. Powinniście najpierw opisać trochę szerzej niż 3 zdania czym w ogóle te wyjaśnienia lokalne są, co dzięki nim można zbadać i dopiero potem przejść do prezentowania wyników. Nie zapomnijcie o cytacji (np. Molnara, Przemka, czy nawet mojej pracy o XAI)
