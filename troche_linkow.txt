@@ -11,7 +11,14 @@ title = {Exploratory Data Analysis and Customer Segmentation for Smartphones}
 }
 
 
+# https://www.bankmycell.com/blog/how-many-phones-are-in-the-world
+# https://www.statista.com/chart/22702/andoid-ios-market-share-selected-countries/
+# https://www.statista.com/topics/840/smartphones/#dossierSummary
+# https://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+# https://www.augie.edu/sites/default/files/u57/pdf/jaciel_subdocs/iPhone.pdf
+# https://www.researchgate.net/publication/336995292_THE_INDUSTRY_OF_MOBILE_PHONE_DEVICES_IN_THE_2000s_ANALYSIS_OF_APPLE_NOKIA_AND_SAMSUNG_INNOVATIVE_PERFORMANCE_BASED_ON_THE_GAME_THEORY_A_INDUSTRIA_DE_TELEFONIA_MOVEL_NA_DECADA_DE_2000_ANALISE_do_DESEMP
 
+##### bib #####
 
 o XAI
 

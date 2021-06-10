@@ -1,0 +1,65 @@
+@misc{2-1-mobile-industry,
+  author = {S. O'Dea}, 
+  year = {2021},
+  url = {https://www.statista.com/statistics/263437/global-smartphone-sales-to-end-users-since-2007/},
+  title = {{Global smartphone sales to end users since 2007}}
+}
+
+@misc{2-1-mobile-industry-2,
+  author = {S. O'Dea},
+  year = {2021},
+  url = {https://www.statista.com/statistics/271496/global-market-share-held-by-smartphone-vendors-since-4th-quarter-2009/},
+  title = {{Global smartphone market share from 4th quarter 2009 to 4th quarter 2020}}
+}
+
+@techreport{2-1-gsma,
+  author = {GSM Associacion}, 
+  year = {2020},
+  institution = {GSM Associacion},
+  url = {https://www.gsma.com/mobileeconomy/wp-content/uploads/2020/03/GSMA_MobileEconomy2020_Global.pdf},
+  title = {{The Mobile Economy}}
+}
+
+@mastersthesis{2-1-medical-diagnosis,
+  author = {Lundegård, Zandra}, 
+  year = {2019},
+  school = {Åbo Akademi},
+  url = {https://core.ac.uk/download/pdf/186507687.pdf},
+  title = {{Current AI technologies for medical imaging and ethical
+dilemmas created by them}}
+}
+
+@phdthesis{2-1-credit-scoring,
+  author = {Kennedy, Kenneth}, 
+  year = {2013},
+  school = {Technological University Dublin},
+  doi = {10.21427/D7NC7J},
+  url = {https://arrow.tudublin.ie/sciendoc/137/},
+  title = {{Credit scoring using machine learning}}
+}
+
+@mastersthesis{2-1-risk-analysis,
+  author = {Chow, Jacky C. K.},
+  year = {2017},
+  month = {06},
+  school = {Aston University},
+  url = {https://www.researchgate.net/publication/318959365_Analysis_of_Financial_Credit_Risk_Using_Machine_Learning},
+  title = {{Analysis of Financial Credit Risk Using Machine Learning}}
+}
+
+@manual{2-1-dalex,
+  title = {{DALEX: moDel Agnostic Language for Exploration and eXplanation
+}},
+  author = {Przemyslaw Biecek and Szymon Maksymiuk and Hubert Baniecki},
+  year = {2021},
+  note = {R package version 2.2.1},
+  url = {https://CRAN.R-project.org/package=DALEX},
+}
+
+@article{2-1-xai-1,
+  author = {Pantelis Linardatos and Vasilis Papastefanopoulos and Sotiris Kotsiantis},
+  year = {2021},
+  journal = {Entropy},
+  title = {{Explainable AI: A Review of Machine Learning Interpretability Methods}},
+  url = {https://www.mdpi.com/1099-4300/23/1/18/pdf},
+}
