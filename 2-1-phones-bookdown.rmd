@@ -68,7 +68,7 @@ Based on the partially presented EDA, we needed to conduct simple data preproces
 
 The next step after EDA was creating prediction models. To compare results and find the best model for mentioned data, there were created 3 models: Random Forest from *ranger* package [@ranger], XGBoost from *mlr* package [@mlr] and SVM, also from the *mlr* package. For each of them, training using 5-fold cross-validation was performed. SVM and XGBoost models cannot be trained using categorical variables so variable `brand` needed to be target encoded in these cases. There were used two measures to compare models results: Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE). The results are presented in the table below (\@ref(fig:2-1-models)).
 
-```{r models, fig.cap='5-fold crossvalidation errors - Root Mean Squared Error and Mean Absolute Error - for each of the tested models (Random Forest, XGBoost, SVM)', echo=FALSE}
+```{r models, fig.cap='5-fold crossvalidation errors - Root Mean Squared Error and Mean Absolute Error - for each of the tested models (Random Forest, XGBoost, SVM)'}
 models <- data.frame(rmse = c(547, 1515, 678), mae = c(295, 1033, 376), row.names = c('ranger', 'xgboost', 'svm'))
 knitr::kable(models, format='markdown')
 ```
@@ -149,13 +149,11 @@ knitr::include_graphics('images/2-1-feature-importance.png')
 
 Feature importance plot (\@ref(fig:2-1-feat-importance)) presents which variable has the most significant impact on prediction result. According to this plot, the most important variables for the ranger model were `ram_gb`, `flash_gb` and `brand`. Two of them are memory parameters which are arguably the most important phone's technical parameters. The third variable describes the phone's brand name, which is not a technical parameter.
 
-
 ```{r 2-1-pdp, fig.align="center", fig.cap='Partial Dependence Profile (PDP) for numeric variables',out.width="100%", echo=FALSE}
 knitr::include_graphics('images/2-1-pdp.png')
 ```
 
 Partial Dependence Profile (\@ref(fig:2-1-pdp)) presents global dependencies between variables and target. The plot confirms observation from the previous plot, presenting a strong dependency between memory parameters and price. On the `front camera mpix` plot, there is an unnatural behaviour near 10-12 mpx, suggesting that phones with these specific parameters are the most expensive. After some research, it appeared that phones with these parameters are mostly made by expensive brands like Samsung and Apple. This leads to the conclusion, that in this case, the brand name was the variable that impacted price, not `front camera mpix`.
-
 
 ```{r 2-1-pdp-brand, fig.align="center", fig.cap='Partial Dependence Profile (PDP) for brand variable',out.width="100%", echo=FALSE}
 knitr::include_graphics('images/2-1-pdp-brand.png')
@@ -166,7 +164,3 @@ Partial Dependence Profile (\@ref(fig:2-1-pdp-brand)) looks slightly different f
 ### Summary and conclusion
 
 To summarize, according to all explanations shown above, there are several conclusions, which can be drawn. The biggest impact on the predicted price for the model had `brand`, `ram_gb` and `flash_gb`. The most expensive brands as Samsung and Apple have biased prices, they are higher than predicted by the model. What is important to highlight is that these conclusions were made for this specific data set, which had only eleven features at the beginning. This may mean, that for bigger data set, with more features, the results could be slightly different. Such sets can be the subject of further research.
-
-
-
-

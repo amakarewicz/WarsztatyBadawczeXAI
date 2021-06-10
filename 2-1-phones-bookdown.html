@@ -512,6 +512,8 @@ Correlation matrix for numeric features
 </ul>
 <p><strong>Models</strong></p>
 <p>The next step after EDA was creating prediction models. To compare results and find the best model for mentioned data, there were created 3 models: Random Forest from <em>ranger</em> package <span class="citation">[@ranger]</span>, XGBoost from <em>mlr</em> package <span class="citation">[@mlr]</span> and SVM, also from the <em>mlr</em> package. For each of them, training using 5-fold cross-validation was performed. SVM and XGBoost models cannot be trained using categorical variables so variable <code>brand</code> needed to be target encoded in these cases. There were used two measures to compare models results: Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE). The results are presented in the table below (@ref(fig:2-1-models)).</p>
+<pre class="r"><code>models &lt;- data.frame(rmse = c(547, 1515, 678), mae = c(295, 1033, 376), row.names = c(&#39;ranger&#39;, &#39;xgboost&#39;, &#39;svm&#39;))
+knitr::kable(models, format=&#39;markdown&#39;)</code></pre>
 <table>
 <thead>
 <tr class="header">
