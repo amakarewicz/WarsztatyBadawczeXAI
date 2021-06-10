@@ -29,7 +29,7 @@ In this article Explainable Artificial Intelligence methods were used to address
 
 Research was carried out on the *phones* dataset provided by the lecturer i. e. data frame with prices and technical parameters of 414 phones. It contains ten explanatory variables and one target variable (`price`), therefore we deal with regression task. The sample of the data is presented below (\@ref(fig:2-1-sample-data)).
 
-```{r 2-1-sample-data, fig.align='center',fig.cap='Sample of the data',out.width="100%", echo=FALSE}
+```{r 2-1-sample-data, fig.align='center',fig.cap='Sample of the data',out.width="100%", echo=FALSE, warning=FALSE, message=FALSE}
 phones <- as.data.frame(rbind(c("Xiaomi Mi 10T 6+128GB", "Xiaomi", 64, 20, 5000, 6, 128, 6.67, 2400, 1080, 1999),
                               c("Samsung Galaxy M21", "Samsung", 48, 20, 6000, 4, 64, 6.40, 2340, 1080, 899),
                               c("Samsung Galaxy Note20", "Samsung", 64, 10, 4300, 8, 256, 6.70, 2400, 1080, 3749)))
@@ -74,7 +74,7 @@ Based on the partially presented EDA, we needed to conduct simple data preproces
 
 The next step after EDA was creating prediction models. To compare results and find the best model for mentioned data, there were created 3 models: Random Forest from *ranger* package [@2-1-ranger], XGBoost from *mlr* package [@2-1-mlr] and SVM, also from the *mlr* package. For each of them, training using 5-fold cross-validation was performed. SVM and XGBoost models cannot be trained using categorical variables so variable `brand` needed to be target encoded in these cases. There were used two measures to compare models results: Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE). The results are presented in the table below (\@ref(fig:2-1-models)).
 
-```{r models, fig.cap='5-fold crossvalidation errors - Root Mean Squared Error and Mean Absolute Error - for each of the tested models (Random Forest, XGBoost, SVM)'}
+```{r models, fig.cap='5-fold crossvalidation errors - Root Mean Squared Error and Mean Absolute Error - for each of the tested models (Random Forest, XGBoost, SVM)', echo=FALSE}
 models <- data.frame(rmse = c(547, 1515, 678), mae = c(295, 1033, 376), row.names = c('ranger', 'xgboost', 'svm'))
 knitr::kable(models, format='markdown')
 ```
@@ -149,25 +149,36 @@ Ceteris Paribus profile (\@ref(fig:2-1-ceteris)) shows different influence of so
 
 In the second step of our XAI analysis, we focused on dataset level explanations - those concerning not a single observation, but all of them. Global methods let us gain better understanding of how our model behaves in general and what influences it the most. We perform analysis of all predictions for the dataset together to find out how each feature affects their average value. The methods used for this purpose are Permutation-based Variable Importance (Feature Importance) [@EMA] and Partial Dependence Profile (PDP) [@EMA].
 
-Feature Importance is a method assesing which variables have the most significant impact on the overall model prediction. The idea of it is to evaluate a change in model's performance in a situation when the effect of given variable is omitted. This simulation is achieved by resampling or permuting values of the variable. If given feature is important to our model, then we expect that, after those permutations the model’s performance will worsen; therefore the greater the change in model's performance, the bigger is the importance of a feature. The calculations, which results are presented below, were performed for 5000 permutations, to achieve stability. Generally 
+Feature Importance is a method assesing which variables have the most significant impact on the overall model prediction. The idea of it is to evaluate a change in model's performance in a situation when the effect of given variable is omitted. This simulation is achieved by resampling or permuting values of the variable. If given feature is important to our model, then we expect that, after those permutations the model’s performance will worsen; therefore the greater the change in model's performance, the bigger is the importance of a feature. The calculations, which results are presented below, were performed for 5000 permutations, to achieve stability.
 
-```{r 2-1-feat-importance, fig.align="center", fig.cap='Feature importance',out.width="100%", echo=FALSE}
+```{r 2-1-feat-importance, fig.align="center", fig.cap='Feature importance explanation for the phones dataset variables. Blue thick bars correspond to RMSE loss after permutations. Dark blue bars represent boxplots for 100 bootstrapped explanations.',out.width="100%", echo=FALSE}
 knitr::include_graphics('images/2-1-feature-importance.png')
 ```
 
 According to the plot (\@ref(fig:2-1-feat-importance)), the most important variables for the model are `ram_gb`, `flash_gb` and `brand`, with visible domination of `ram_gb`. After these, the next variables in terms of impact are the camera-related ones, then `diag` and `battery_mAh`. Those observations coincide with the conclusions drawn from local explanations (\@ref(fig:2-1-breakdown-plot20), \@ref(fig:2-1-breakdown-plot246)) - for single predictions, brand and memory-related variables were also very important and had a significant impact on the price of the phone, and camera-related were next. Whereas those previous results could be a coincidence, and true only for those 2 chosen observations, now we are ensured that those conclusions are adequate for the whole dataset. Moreover, these results confirm also our intuition. Memory parameters are arguably the most important phone's technical parameters and the high position of `brand` on the chart shows, that, probably in case of the bigger companies, the prices of the phones are likely to be biased with regard to their parameters.
 
-```{r 2-1-pdp, fig.align="center", fig.cap='Partial Dependence Profile (PDP) for numeric variables',out.width="100%", echo=FALSE}
+The general idea underlying the construction of Partial Dependence Profile (PDP) is to show how the expected value of model prediction behaves as a function of a selected explanatory variable. Comparison of these profiles may give additional insight into the stability of model's prediction.
+
+```{r 2-1-pdp, fig.align="center", fig.cap='Partial Dependence Profile (PDP) explanation for numeric variables in phones dataset. Blue lines represent variable (horizontal axis) and price (vertical axis) dependence.',out.width="100%", echo=FALSE}
 knitr::include_graphics('images/2-1-pdp.png')
 ```
 
-Partial Dependence Profile (\@ref(fig:2-1-pdp)) presents global dependencies between variables and target. The plot confirms observation from the previous plot, presenting a strong dependency between memory parameters and price. On the `front camera mpix` plot, there is an unnatural behaviour near 10-12 mpx, suggesting that phones with these specific parameters are the most expensive. After some research, it appeared that phones with these parameters are mostly made by expensive brands like Samsung and Apple. This leads to the conclusion, that in this case, the brand name was the variable that impacted price, not `front camera mpix`.
+Partial Dependence Profile (\@ref(fig:2-1-pdp)) presents global dependencies between variables and target. The plot confirms observation from the previous plot (\@ref(fig:2-1-feat-importance)), presenting a strong dependency between memory parameters and price. On the `front camera mpix` plot, there is an unnatural behaviour near 10-12 mpx, suggesting that phones with these specific parameters are the most expensive. That anomaly is explained below.
 
-```{r 2-1-pdp-brand, fig.align="center", fig.cap='Partial Dependence Profile (PDP) for brand variable',out.width="100%", echo=FALSE}
+```{r 2-1-pdp-front-camera, fig.align="center", fig.cap='Results of the research explaining front camera mpix PD profile anomaly. The table above presents the number of phones grouped by brand having from 10 to 12 front camera mpix value. The PDP plot below the table presents the front camera mpix PD profile with marked 10 and 12 values.',out.width="100%", echo=FALSE}
+brands <- data.frame(count = c(21, 3, 14), row.names = c('Apple', 'Motorola', 'Samsung'))
+colnames(brands) <- 'Number of phones'
+knitr::kable(brands, format='markdown')
+knitr::include_graphics('images/2-1-front-camera.png')
+```
+
+The research proved that phones having from 10 to 12 front camera mpix value are mostly represented by expensive brands like Samsung and Apple in phones dataset. This leads to the conclusion, that in this case, the brand name was the variable that impacted price, not `front camera mpix`.
+
+```{r 2-1-pdp-brand, fig.align="center", fig.cap='Partial Dependence Profile (PDP) explanation for brand variable in phones dataset. Blue bars represent the average predictions for each brand in the dataset.',out.width="100%", echo=FALSE}
 knitr::include_graphics('images/2-1-pdp-brand.png')
 ```
 
-Partial Dependence Profile (\@ref(fig:2-1-pdp-brand)) looks slightly different for brand variable because it is a character variable. Surprisingly, this plot presents a weak brand name impact on price, unlike previous plots. Brands that increase the price are Apple, Archos, and CAT, but only one of those brands (Apple) is a big phone company.
+Partial Dependence Profile (\@ref(fig:2-1-pdp-brand)) looks slightly different for brand variable because it is a categorical variable. Surprisingly, this plot presents a weak brand name impact on price, unlike previous plots (\@ref(fig:2-1-pdp)) and (\@ref(fig:2-1-feat-importance)). Brands that increase the price are Apple, Archos, and CAT, but only one of those brands (Apple) is a big phone company. CAT brand is represented by three phones wheres Archos appears in the dataset only once. That leads to the conclusion, that their PD profile might not be stable.
 
 ### Summary and conclusion
 
