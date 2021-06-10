@@ -93,7 +93,9 @@ In the first step of our XAI, the focus was on instance level explanations - ana
 #### First example
 
 ```{r breakdown-table}
-kable(phones[c(21,263),-c(1,9,10)], row.names=FALSE)
+phones1 <- phones[c(21,263),-c(1,9,10)]
+row.names(phones1) <- c(20,246)
+kable(phones1)
 ```
 
 ```{r breakdown-plot20, fig.align="center", fig.cap='Breakdown profile for observation 20'}
@@ -109,7 +111,9 @@ Shown above two observations (img_bd_21, img_bd_263) vary three features - *ram_
 #### Second example
 
 ```{r lime-table}
-kable(phones[c(40,319),-c(1,9,10)], row.names=FALSE)
+phones2 <- phones[c(40,319),-c(1,9,10)]
+row.names(phones2) <- c(40,319)
+kable(phones2)
 ```
 
 ```{r lime-plot-40, fig.align="center", fig.cap='A plot of results of LIME method for 40 observation'}
@@ -123,6 +127,12 @@ knitr::include_graphics('images/2-1-lime-319.png')
 On LIME plots (img_lime_40, img_lime_319) two phones, which have similar values in many features, in two (*battery_mAh* and *diag*) second phone (img_lime_319) has better values than first one (img_lime_40). Even though the price of the first phone is three times higher according to our model. The only difference not mentioned above between them is a brand - the first one is the iPhone. That seems to be a conclusion consistent with reality.
 
 #### Third example
+
+```{r ceteris-table}
+phones3 <- phones[c(59,77),-c(1,9,10)]
+row.names(phones3) <- c(59,77)
+kable(phones3)
+```
 
 ```{r ceteris, fig.align="center", fig.cap='Ceteris Paribus profile'}
 knitr::include_graphics('images/2-1-ceteris-paribus.jpg')
