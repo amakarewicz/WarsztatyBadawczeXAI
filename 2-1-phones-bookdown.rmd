@@ -31,11 +31,7 @@ phones <- as.data.frame(rbind(c("Xiaomi Mi 10T 6+128GB", "Xiaomi", 64, 20, 5000,
                               c("Samsung Galaxy Note20", "Samsung", 64, 10, 4300, 8, 256, 6.70, 2400, 1080, 3749)))
 names(phones) <- c("name", "brand", "back_camera_mpix", "front_camera_mpix", "battery_mAh", "ram_gb", "flash_gb", "diag", "height_px", "width_px", "price")
 
-# knitr::kable(phones, format='markdown')
-
-kable(phones) %>%
-  kable_styling() %>%
-  scroll_box(width = "100%", box_css = "border: 0px;")
+knitr::kable(phones, format='markdown')
 ```
 
 **Exploratory Data Analysis and data preprocessing**
